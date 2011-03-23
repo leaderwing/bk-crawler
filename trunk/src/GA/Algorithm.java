@@ -28,49 +28,49 @@ public class Algorithm {
     private static ArrayList fitnessTable; //bang thich nghi
     public static Random random = new Random();
 
-    Algorithmblic GA() {
+    Algorithm () {
         this.InitialValues();
- Algorithm     GA.m_mutationRate = 0.1;
- Algorithm     GA.m_crossoverRate = 0.80;
- Algorithm     GA.m_populationSize = 100;
- Algorithm     GA.m_generationSize = 2000;
+        Algorithm.m_mutationRate = 0.1;
+        Algorithm.m_crossoverRate = 0.80;
+        Algorithm.m_populationSize = 100;
+        Algorithm.m_generationSize = 2000;
     }
 
-    Algorithmblic GA(int populationSize, int genomeSize, double m_mutationRate, double m_crossoverRate) {
+    Algorithm (int populationSize, int genomeSize, double m_mutationRate, double m_crossoverRate) {
         this.InitialValues();
- Algorithm     GA.m_populationSize = populationSize;
- Algorithm     GA.m_genomeSize = genomeSize;
- Algorithm     GA.m_crossoverRate = m_crossoverRate;
- Algorithm     GA.m_mutationRate = m_mutationRate;
+        Algorithm.m_populationSize = populationSize;
+        Algorithm.m_genomeSize = genomeSize;
+        Algorithm.m_crossoverRate = m_crossoverRate;
+        Algorithm.m_mutationRate = m_mutationRate;
     }
 
     public void InitialValues() {
- Algorithm     GA.m_elitism = false;
+    	Algorithm.m_elitism = false;
     }
 
     private void InitFitnessTable() {
- Algorithm     GA.m_totalFitness = 0;
- Algorithm     GA.fitnessTable.clear();
-        for (int i = 0Algorithmi <= GA.m_populationSize; i++) {
-            Genome temp = (GAlgorithmome) GA.thisGeneration.get(i);
+    	Algorithm.m_totalFitness = 0;
+    	Algorithm.fitnessTable.clear();
+        for (int i = 0; i <= Algorithm.m_populationSize; i++) {
+            Genome temp = (Genome) Algorithm.thisGeneration.get(i);
             temp.CaculateFitness();
-     Algorithm     GA.m_totalFitness += temp.GetFitness();
-     Algorithm     GA.fitnessTabAlgorithm.add(GA.m_totalFitness);
+            Algorithm.m_totalFitness += temp.GetFitness();
+            Algorithm.fitnessTable.add(Algorithm.m_totalFitness);
         }
     }
 
     private int RouletteSelection() {
-        double randomFitness = random.nextDoubAlgorithm() * GA.m_totalFitness;
+        double randomFitness = random.nextDouble() * Algorithm.m_totalFitness;
         int index = -1;
         int mid;
         int first = 0;
-        int Algorithmst = GA.m_populationSize;
+        int last = Algorithm.m_populationSize;
         mid = (last - first) / 2;
         while (index == -1 && first <= last) {
-            if (randomFitness < (DAlgorithmble) GA.fitnessTable.get(mid)) {
+            if (randomFitness < (Double) Algorithm.fitnessTable.get(mid)) {
                 last = mid;
             } else {
-                if (randomFitness > (DAlgorithmble) GA.fitnessTable.get(mid)) {
+                if (randomFitness > (Double) Algorithm.fitnessTable.get(mid)) {
                     first = mid;
                 }
             }
@@ -84,38 +84,38 @@ public class Algorithm {
     }
 
     private void RankPopulation() {
- Algorithm     GA.m_totalFitness = 0;
- Algorithm     GA.fitnessTable.clear();
-        for (int i = 0Algorithmi <= GA.m_populationSize; i++) {
-            Genome temp = ((GAlgorithmome) GA.thisGeneration.get(i));
-     Algorithm     GA.m_totalFitness += temp.GetFitness();
-     Algorithm     GA.fitnessTable.add((DAlgorithmble) GA.m_totalFitness);
+    	Algorithm.m_totalFitness = 0;
+    	Algorithm.fitnessTable.clear();
+        for (int i = 0;i <= Algorithm.m_populationSize; i++) {
+            Genome temp = (Genome) Algorithm.thisGeneration.get(i);
+            Algorithm.m_totalFitness += temp.GetFitness();
+            Algorithm.fitnessTable.add((Double) Algorithm.m_totalFitness);
         }
     }
 
     public void Go() {
         double maxFitness = 0;
         int maxIndex = 0;
- Algorithm     GA.fitnessTable = new ArrayList();
- Algorithm     GA.thisGeneration = new ArrayList();
- Algorithm     GA.nextGeneration = new ArrAlgorithmList(GA.m_generationSize);
-        Genome.setMutatiAlgorithmRate(GA.m_mutationRate);
- Algorithm     GA.m_bestGen = new Genome();
+        Algorithm.fitnessTable = new ArrayList();
+        Algorithm.thisGeneration = new ArrayList();
+        Algorithm.nextGeneration = new ArrayList(Algorithm.m_generationSize);
+        Genome.setMutationRate(Algorithm.m_mutationRate);
+        Algorithm.m_bestGen = new Genome();
         this.CreateFirstGeneration(); //ham bo qua
         this.InitFitnessTable();
-        for (int i = 0Algorithmi <= GA.m_generationSize; i++) {
+        for (int i = 0;i <= Algorithm.m_generationSize; i++) {
             this.CreateNextGeneration();
-            for (int j = iAlgorithmj <= GA.m_populationSize; j++) {
-                Genome gen = (GAlgorithmome) GA.thisGeneration.get(j);
+            for (int j = i;j <= Algorithm.m_populationSize; j++) {
+                Genome gen = (Genome) Algorithm.thisGeneration.get(j);
                 gen.CaculateFitness();
                 if (gen.GetFitness() > maxFitness) {
                     maxIndex = j;
                     maxFitness = gen.GetFitness();
-             Algorithm     GA.m_bestGen = gen;
+                    Algorithm.m_bestGen = gen;
                 }
             }
             this.RankPopulation();
-     Algorithm     GA.m_bAlgorithmtGen=GA.thisGeneratiAlgorithm.get(GA.m_populationSize);
+            Algorithm.m_bestGen=Algorithm.thisGeneration.get(Algorithm.m_populationSize);
         }
     }
 
@@ -123,12 +123,12 @@ public class Algorithm {
         
     }
     public void CreateNextGeneration() {
- Algorithm     GA.nextGeneration.clear();
+    	Algorithm.nextGeneration.clear();
         Genome gen = new Genome();
-     Algorithm if (GA.m_elitism) {
-            gen = (GAlgorithmome) GA.thisGeneratiAlgorithm.get(GA.m_populationSize);
+        if (Algorithm.m_elitism) {
+            gen = (Genome) Algorithm.thisGeneration.get(Algorithm.m_populationSize);
         }
-        for (int i = 0Algorithmi <= GA.m_populationSize; i += 2) {
+        for (int i = 0;i <= Algorithm.m_populationSize; i += 2) {
             int pidx1 = 0;
             int pidx2 = 0;
             pidx1 = this.RouletteSelection();
@@ -139,9 +139,9 @@ public class Algorithm {
                 }
             }
             Genome parent1, parent2, child1, child2;
-            parent1 = (GAlgorithmome) GA.thisGeneration.get(pidx1);
-            parent2 = (GAlgorithmome) GA.thisGeneration.get(pidx2);
-            if (random.nextDoublAlgorithm) <= GA.m_crossoverRate) { // xem lai random trong khoang 0-1
+            parent1 = (Genome) Algorithm.thisGeneration.get(pidx1);
+            parent2 = (Genome) Algorithm.thisGeneration.get(pidx2);
+            if (random.nextDouble() <= Algorithm.m_crossoverRate) { // xem lai random trong khoang 0-1
                 child1 = parent1.Crossover(parent2);
                 child2 = parent2.Crossover(parent1);
             } else {
@@ -150,15 +150,15 @@ public class Algorithm {
             }
             child1.Mutate();
             child2.Mutate();
-     Algorithm     GA.nextGeneration.add(child1);
-     Algorithm     GA.nextGeneration.add(child2);
+            Algorithm.nextGeneration.add(child1);
+            Algorithm.nextGeneration.add(child2);
         }
-     Algorithm if (GA.m_elitism && gen.GetSize() != 0) { // xem lai elitism
-     Algorithm     GA.nextGeneration.set(0, gen);
+     if (Algorithm.m_elitism && gen.GetSize() != 0) { // xem lai elitism
+    	 Algorithm.nextGeneration.set(0, gen);
         }
- Algorithm     GA.thisGeneration.clear();
-        for (int i = 0Algorithmi <= GA.m_populationSize; i++) {
-     Algorithm     GA.thisGeneration.Algorithmt(i, GA.nextGeneration.get(i));
+     	Algorithm.thisGeneration.clear();
+        for (int i = 0;i <= Algorithm.m_populationSize; i++) {
+        	Algorithm.thisGeneration.set(i, Algorithm.nextGeneration.get(i));
         }
     }
 }
