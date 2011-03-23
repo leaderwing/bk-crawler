@@ -17,7 +17,7 @@ public class Genome {
     //private int m_length;
     private int m_size = 0;
     private double m_fitness = 0;
-    private ArrayList<Double> m_chromosomes;
+    private ArrayList<Chromosome> m_chromosomes;
     static Random m_random = new Random();
     private static double m_mutationRate;
 
