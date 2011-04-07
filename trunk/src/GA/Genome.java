@@ -72,7 +72,28 @@ public class Genome {
 		}
 		return temp;
 	}
-
+	public Genome CrossoverMulti(Genome genome2, Genome genome3, Genome genome4) {
+		Genome temp = new Genome();
+		this.SetSize();
+		int pos = size_chromosome/4;
+		
+		for (int i = 0; i < this.size_chromosome; i++) {
+			if (i < pos) {
+				temp.chromosome.add(i, this.chromosome.get(i));
+			} else {
+				if (i < 2*pos) {
+					temp.chromosome.add(i, genome2.chromosome.get(i));
+				} else {
+					if (i < 3*pos) {
+						temp.chromosome.add(i, genome3.chromosome.get(i));
+					} else {
+						temp.chromosome.add(i, genome4.chromosome.get(i));
+					}
+				}	
+			}
+		}
+		return temp;
+	}
 	// dot bien
 
 	public void Mutate(Double mutation_rate) {
