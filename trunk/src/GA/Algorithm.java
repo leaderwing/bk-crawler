@@ -17,7 +17,7 @@ public class Algorithm {
 	private static double mutation_rate; // phan tram dot bien
 	private static double crossover_rate; // phan tram lai ghep
 	private static int population_size; // kich co quan the
-	private static int number_generation; // số vòng đời thế hệ
+	private static int number_generation; // so vong lap
 	private static int gene_size; // kich co bo gen
 	private static double total_fitness; // do fitness cua quan the moi
 	private static boolean m_elitism;// chon loc
@@ -180,7 +180,69 @@ public class Algorithm {
 			Algorithm.thisGeneration.set(i, Algorithm.nextGeneration.get(i));
 		}*/
 	}
-
+	public void CreateNextGeneration2() {
+		Algorithm.nextGeneration.clear();
+		
+		for (int i = 0; i < Algorithm.population_size; i += 2) {
+			int pidx1 = 0;
+			int pidx2 = 0;
+			int pidx3 = 0;
+			int pidx4 = 0;
+			pidx1 = this.rouletteSelection();
+			while (true) {
+				pidx2 = this.rouletteSelection();
+				if (pidx1 != pidx2) {
+					while (true) {
+						pidx3 = this.rouletteSelection();
+						if ((pidx1 != pidx3)&&(pidx2 != pidx3)) {
+							while (true) {
+								pidx4 = this.rouletteSelection();
+								if ((pidx1 != pidx4)&&(pidx2 != pidx4)&&((pidx3 != pidx4))) {
+									break;
+								}
+							}
+							break;
+						}
+					}
+					break;
+				}
+			}
+			Genome parent1, parent2, parent3, parent4, child;
+			
+			parent1 =  Algorithm.thisGeneration.get(pidx1);
+			parent2 =  Algorithm.thisGeneration.get(pidx2);
+			parent3 =  Algorithm.thisGeneration.get(pidx3);
+			parent4 =  Algorithm.thisGeneration.get(pidx4);
+			if (random.nextDouble() <= Algorithm.crossover_rate) { 
+				child = parent1.CrossoverMulti(parent2, parent3, parent4);
+				child.Mutate(Algorithm.mutation_rate);
+				Algorithm.nextGeneration.add(child);
+			} else {
+				parent1.Mutate(mutation_rate);
+				parent2.Mutate(mutation_rate);
+				parent3.Mutate(mutation_rate);
+				parent4.Mutate(mutation_rate);
+				Algorithm.nextGeneration.add(parent1);
+				Algorithm.nextGeneration.add(parent2);
+				Algorithm.nextGeneration.add(parent3);
+				Algorithm.nextGeneration.add(parent4);
+			}
+		}
+		System.out.println("next generation ="+ Algorithm.nextGeneration.size()+"\n");
+		for(int i=0;i<Algorithm.nextGeneration.size();i++) {
+			System.out.println(Algorithm.nextGeneration.get(i).getChromosome()+"\n");
+		}
+		Algorithm.thisGeneration= Algorithm.nextGeneration;
+		System.out.println("this generation ="+ Algorithm.thisGeneration.size());
+		for(int i=0;i<Algorithm.thisGeneration.size();i++) {
+			System.out.println(Algorithm.thisGeneration.get(i).getChromosome()+"\n");
+		}
+		/*for (int i = 0; i <= Algorithm.population_size; i++) {
+			System.out.println("i="+i+"\n");
+            Algorithm.thisGeneration.remove(i);		
+			Algorithm.thisGeneration.set(i, Algorithm.nextGeneration.get(i));
+		}*/
+	}
 	public int rouletteSelection() {
 		// TODO Auto-generated method stub
 		Double random = Math.random();
