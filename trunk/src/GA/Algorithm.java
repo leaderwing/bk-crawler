@@ -180,6 +180,7 @@ public class Algorithm {
 			Algorithm.thisGeneration.set(i, Algorithm.nextGeneration.get(i));
 		}*/
 	}
+	//lai ghep da diem
 	public void CreateNextGeneration2() {
 		Algorithm.nextGeneration.clear();
 		
