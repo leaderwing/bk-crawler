@@ -229,6 +229,8 @@ public class Algorithm {
 		for(int i=0;i<nextGeneration.size();i++) {
 			System.out.println(nextGeneration.get(i).getChromosome()+"\n");
 		}
+		//đối tg thisGeneration và nextGeneration cùng tham chiếu tới một đối tg
+		//1 trong 2 cái thay đổi thì cái kia sẽ thay đổi theo=>truyền tham chiếu
 		Algorithm.thisGeneration= nextGeneration;
 		System.out.println("this generation result ="+ Algorithm.thisGeneration.size());
 		for(int i=0;i<Algorithm.thisGeneration.size();i++) {
