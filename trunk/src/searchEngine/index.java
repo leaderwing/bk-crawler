@@ -266,7 +266,7 @@ public class index {
 			}*/
 			
 			// luu lai num_nst doc co weight lon nhat
-			if (weight_doc > 10) {
+			if (weight_doc > 0) {
 				if (doc_weight.size() == 0) {
 					doc_weight.add(weight_doc);
 					doc_link.add(url_doc);
