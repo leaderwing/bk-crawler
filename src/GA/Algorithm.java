@@ -172,7 +172,7 @@ public class Algorithm {
 				int count_generation=0;
 				while((count_generation<Algorithm.number_generation)&&(Algorithm.best_fitness<Algorithm.suitable_fitness)){
 					count_generation++;
-					this.CreateNextGeneration();
+					this.CreateNextGeneration2();
 					this.caculateRouletteWheel(Algorithm.thisGeneration);
 					if(Algorithm.is_GA) {
 						System.out.println("is GA 2 :"+ Algorithm.is_GA);
@@ -244,7 +244,7 @@ public class Algorithm {
 	public void CreateNextGeneration2() {
 		ArrayList<Genome> nextGeneration = new ArrayList<Genome>(); // quan the moi
 		
-		for (int i = 0; i < Algorithm.population_size; i += 2) {
+		while(nextGeneration.size()<Algorithm.population_size) {
 			int pidx1 = 0;
 			int pidx2 = 0;
 			int pidx3 = 0;
@@ -269,17 +269,22 @@ public class Algorithm {
 				}
 			}
 			Genome parent1, parent2, parent3, parent4, child;
-			
+			ArrayList<Genome> arr_parent= new ArrayList<Genome>();
 			parent1 =  Algorithm.thisGeneration.get(pidx1);
 			parent2 =  Algorithm.thisGeneration.get(pidx2);
 			parent3 =  Algorithm.thisGeneration.get(pidx3);
 			parent4 =  Algorithm.thisGeneration.get(pidx4);
+			arr_parent.add(parent4);
+			arr_parent.add(parent3);
+			arr_parent.add(parent2);
+			arr_parent.add(parent1);
 			if (random.nextDouble() <= Algorithm.crossover_rate) { 
-				ArrayList<Genome> arr_parent= new ArrayList<Genome>();
+				
 				child = parent1.CrossoverMulti(arr_parent);
+				
 				child.Mutate(Algorithm.mutation_rate);
 				nextGeneration.add(child);
-			} else {
+			} /*else {
 				parent1.Mutate(mutation_rate);
 				parent2.Mutate(mutation_rate);
 				parent3.Mutate(mutation_rate);
@@ -288,13 +293,15 @@ public class Algorithm {
 				nextGeneration.add(parent2);
 				nextGeneration.add(parent3);
 				nextGeneration.add(parent4);
-			}
+			}*/
 		}
+		
+		Algorithm.thisGeneration= nextGeneration;
+		
 		System.out.println("next generation ="+ nextGeneration.size()+"\n");
 		for(int i=0;i<nextGeneration.size();i++) {
 			System.out.println(nextGeneration.get(i).getChromosome()+"\n");
 		}
-		Algorithm.thisGeneration= nextGeneration;
 		System.out.println("this generation ="+ Algorithm.thisGeneration.size());
 		for(int i=0;i<Algorithm.thisGeneration.size();i++) {
 			System.out.println(Algorithm.thisGeneration.get(i).getChromosome()+"\n");

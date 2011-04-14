@@ -32,7 +32,7 @@ public class Genome {
 	}
 
 	public void AddChromosome(Double m_chromosome) {
-		// this.chromosome.add(m_chromosome);
+		this.chromosome.add(m_chromosome);
 	}
 
 	public void SetSize() {
@@ -189,7 +189,7 @@ public class Genome {
 	 public static int getMaxIndex(ArrayList<Genome> arr_parent,int last_pos, int pos) {
 		 int index=0;
 		 double max_weight = 0;
-		 for (int i=0; i<=arr_parent.size(); i++) {
+		 for (int i=0; i<arr_parent.size(); i++) {
 			 double weight = 0;
 			 for(int j=last_pos; j<=pos; j++) {
 				 weight += arr_parent.get(i).chromosome.get(j);  
