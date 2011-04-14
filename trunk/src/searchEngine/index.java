@@ -50,8 +50,10 @@ public class index {
 		
 		arr_keywords.add("score");
 		arr_keywords.add("scores");
-		ArrayList<String> keyword_2= arr_keywords;
-		
+		ArrayList<String> keyword_2=new ArrayList<String>();
+		for(int i=0;i<arr_keywords.size();i++) {
+			keyword_2.add(arr_keywords.get(i));
+		}
 		index.mutation_rate = 0.01;
 		index.crossover_rate = 0.8;
 		index.number_generation = 200;
@@ -145,13 +147,9 @@ public class index {
 						// Append each new HTML line into one string. Add a tab character.
 						while ((sourceLine = source.readLine()) != null)
 							content += sourceLine + "\t";*/
-						try {
+						
 						code_html =Jsoup.connect(arr_link_in_queue.get(0)).get();
-						}catch (Exception e) {
-							// TODO: handle exception
-							System.out.println("error get content 2");
-							continue;
-						}
+						
 						System.out.println("before 2 :" + i + " :"+ arr_link_in_queue.get(0));
 						url_doc = arr_link_in_queue.get(0);
 						arr_link_crawled.add(arr_link_in_queue.get(0));
@@ -266,13 +264,14 @@ public class index {
 			}*/
 			
 			// luu lai num_nst doc co weight lon nhat
-			if (weight_doc > 0) {
+			if (weight_doc > 8) {
 				if (doc_weight.size() == 0) {
 					doc_weight.add(weight_doc);
 					doc_link.add(url_doc);
 					doc_content.add(content_doc);
 				} else {
 					Boolean bool = false;
+					//chèn trọng số của doc vào doc_weight theo chiều giảm dần
 					for (int j = 0; j < doc_weight.size(); j++) {
 						if (weight_doc >= doc_weight.get(j)) {
 							doc_weight.add(j, weight_doc);
@@ -283,12 +282,14 @@ public class index {
 							break;
 						}
 					}
+					// chèn trọng số của doc vào cuối mảng
 					if (bool == false) {
 						doc_weight.add(weight_doc);
 						doc_link.add(url_doc);
 						doc_content.add(content_doc);
 					}
 				}
+				//các mảng chỉ lưu với kích thước <= num_nst
 				if (doc_weight.size() > num_nst) {
 					doc_weight.remove(doc_weight.size() - 1);
 					doc_link.remove(doc_weight.size() - 1);
@@ -391,8 +392,8 @@ public class index {
 					for (int n = 0; n < arr_keywords.size(); n++) {
 						for (int m = 0; m < arr_link_text.length; m++) {
 							if (arr_link_text[m].equals(arr_keywords.get(n))) {
-								System.out.println("keyword ="+ arr_keywords.get(n) + "\n");
-								System.out.println("link text =" + linkText);
+								System.out.println("keyword ="+ arr_keywords.get(n) );
+								System.out.println("link text =" + linkText+"\n");
 								is_topic = true;
 								break;
 							}
