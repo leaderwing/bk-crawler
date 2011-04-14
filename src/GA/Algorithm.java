@@ -321,5 +321,5 @@ public class Algorithm {
 		return gene_i;
 	}
 	//Long code
-	
+   
 }

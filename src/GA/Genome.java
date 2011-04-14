@@ -75,20 +75,22 @@ public class Genome {
 	public Genome CrossoverMulti(ArrayList<Genome> parent) {
 		  Genome temp = new Genome();
 		  this.SetSize();
-		  int j = 0,k = 0;
-		  int pos = size_chromosome/parent.size();
+		  int j = 0,index = 0, t=0;
+		  int step = size_chromosome/parent.size();
+		  t = step;
+		  for (int i = 0; i < parent.size()-1; i++) {		   
+			index = getMaxIndex(parent, j, t);
+			for (int k=j; k<t; k++) {
+				temp.AddChromosome(parent.get(index).chromosome.get(k));
+			}
+			j=t;
+			t=t+step;			
+		   }
+		  index = getMaxIndex(parent, t, size_chromosome-1);
+			for (int k=t; k<=size_chromosome-1; k++) {
+				temp.AddChromosome(parent.get(index).chromosome.get(k));
+			}
 		  
-		  for (int i = 0; i < this.size_chromosome; i++) {
-		   if((j<=pos)&&(k<=parent.size())){
-		    temp.AddChromosome(parent.get(k).chromosome.get(i));
-		   }
-		   else{
-		    j=0;
-		    k++;
-		    temp.AddChromosome(parent.get(k).chromosome.get(i));
-		   }
-		   j++;
-		  }
 		  return temp;
 		 }
 	// dot bien
@@ -164,6 +166,11 @@ public class Genome {
 		}
 		System.out.println("fitness of chromosome ="+ this.chromosome_fitness+"\n");*/
 	}
+	
+	
+	
+	
+	
 
 	/**
 	 * @return the mutation_rate
@@ -179,5 +186,20 @@ public class Genome {
 	 * = amutation_rate; }
 	 */
 	//Long code
-	
+	 public static int getMaxIndex(ArrayList<Genome> arr_parent,int last_pos, int pos) {
+		 int index=0;
+		 double max_weight = 0;
+		 for (int i=0; i<=arr_parent.size(); i++) {
+			 double weight = 0;
+			 for(int j=last_pos; j<=pos; j++) {
+				 weight += arr_parent.get(i).chromosome.get(j);  
+			 }
+			 if (max_weight < weight) {
+				 max_weight = weight;
+				 index = i;
+			 }
+			 
+		 }
+	    	return index;
+	    }	
 }
