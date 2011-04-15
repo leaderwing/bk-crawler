@@ -187,8 +187,7 @@ public class indexVN {
 			content_doc = doc.body().text();
 
 			N++;
-			//helper helper = new helper();
-            //content_doc= content_doc.toLowerCase(Locale.ENGLISH);
+			
 			content_doc= content_doc.toLowerCase();
             //System.out.println("content_ doc ="+ content_doc+"\n");
 			VietTokenizer vietTokenizer = new VietTokenizer();
@@ -206,13 +205,12 @@ public class indexVN {
 				}
 			}
 			System.out.println("array list term ="+ arr_term_in_doc);
-			//System.exit(0);
-			//content_doc = helper.removeStopWord(content_doc);
+			
 			length_doc = arr_term_in_doc.size();
 			sum_length_doc = sum_length_doc + length_doc;
 			float avg_length_doc = sum_length_doc / N;
 			content_doc = content_doc.toLowerCase();
-			//String[] arr_content = content_doc.split(" ");
+			
 			weight_doc = 0;
 			HashMap<String, Integer> count_frequent_term = new HashMap<String, Integer>();
 			for (int j = 0; j < arr_term_in_doc.size(); j++) {
