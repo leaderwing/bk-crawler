@@ -58,7 +58,7 @@ public class index {
 		index.crossover_rate = 0.8;
 		index.number_generation = 200;
 		// so nst trong quan the
-		int num_nst = 30;
+		int num_nst = 50;
 		// seed url
 		
 		String url="http://www.nytimes.com";
@@ -71,22 +71,21 @@ public class index {
 		int length_doc;
 		// sum length of documents
 		int sum_length_doc = 0;
-		// the weight of the term j in document i
-		double weight_doc_j;
+		
 		// sum weight of the document
 		double weight_doc;
 		// max document crawler
 		int max_doc = 3000;
-		// content document
-		String content_doc;
+		
 		// url of document
 		String url_doc = "";
 		// array chua cac link da crawler
 		ArrayList<String> arr_link_crawled = new ArrayList<String>();
 		// array chua cac link duoc uu tien cao nhat
 		ArrayList<String> arr_priority_link = new ArrayList<String>();
-		// array link duoc xep theo weight of document
+		// mảng trọng số của link
 		ArrayList<Double> arr_value_of_link = new ArrayList<Double>();
+		// array link duoc xep theo weight of document
 		ArrayList<String> arr_link_in_queue = new ArrayList<String>();
 		// khoi tao cac mang chua thong tin ve 50 document tot nhat
 		ArrayList<String> doc_link = new ArrayList<String>();
@@ -102,6 +101,8 @@ public class index {
 		String sourceLine = "";
 		String content = "";
 		for (int i = 0; i < max_doc; i++) {
+			// content document
+			String content_doc="";
 			// array chua tong so document co chu keyword
 			int[] nj = new int[arr_keywords.size()];
 			for (int n = 0; n < nj.length; n++) {
@@ -159,6 +160,7 @@ public class index {
 						le.printStackTrace();
 						arr_link_crawled.add(arr_link_in_queue.get(0));
 						arr_link_in_queue.remove(0);
+						arr_value_of_link.remove(0);
 						continue;
 					}
 				}
@@ -210,6 +212,8 @@ public class index {
 			// int [] arr_fre_key= new int[arr_keywords.size()];
 			boolean is_true_topic=false;//site đang duyệt có nói về topic của mình hay không?
 			for (int j = 0; j < arr_keywords.size(); j++) {
+				// the weight of the term j in document i
+				double weight_doc_j=0;
 				if (count_frequent_term.get(arr_keywords.get(j)) == null) {
 					count_frequent_term.put(arr_keywords.get(j), 0);
 				}
@@ -238,9 +242,7 @@ public class index {
 						if (ms != 0) {
 							weight_doc_j = ts / ms;
 							weight_doc = weight_doc + weight_doc_j;
-						} else {
-							weight_doc_j = 0;
-						}
+						} 
 						// test
 						System.out.println("keyword ="+ arr_keywords.get(j)+"\n");
 						System.out.println("fre_key =" + frequence_key + "\n");
@@ -264,7 +266,7 @@ public class index {
 			}*/
 			
 			// luu lai num_nst doc co weight lon nhat
-			if (weight_doc > 8) {
+			if (weight_doc > 5) {
 				if (doc_weight.size() == 0) {
 					doc_weight.add(weight_doc);
 					doc_link.add(url_doc);
@@ -319,14 +321,23 @@ public class index {
 					Newkeyword.saveDocument(new_key, doc_link.get(pos_new_key),
 							best_fitness);
 				}
+				doc_content.clear();
+				doc_link.clear();
+				doc_weight.clear();
 			}
 			
 			// save into db
 			DocumentRelative.saveDocument(url_doc, content_doc, weight_doc);
 
 			// cho link vao queue
-			int position = 0;
-			int count_while = 0;
+			int position = -1;//vị trí chèn link
+			//position chỉ cần tìm ở vòng lặp đầu,các vòng sau thì chèn tại position đó luôn
+			int count_while=0;
+			if(weight_doc>4) {
+				
+				System.out.println("array value of link before ="+ arr_value_of_link+"\n");
+				//System.out.println("array link in queue before="+ arr_link_in_queue+"\n");
+			}
 			while (doc.select("a").first() != null) {
 				Element link = doc.select("a").first();
 				//System.out.println("link  : " + link);
@@ -385,7 +396,8 @@ public class index {
 				}
 				// neu link nay chua duoc crawl
 				if (!is_crawl) {
-					boolean is_topic = false;
+					//kiểm tra xem link text có chứa keyword không
+					/*boolean is_topic = false;
 					linkText=linkText.toLowerCase();
 					linkText = linkText.replaceAll("[^a-z 0-9]+","");
 					String[] arr_link_text= linkText.split(" "); 
@@ -402,9 +414,9 @@ public class index {
 							break;
 						}
 
-					}
+					}*/
 					// linkText co chua keyword
-					if (is_topic) {
+					/*if (is_topic) {
 						boolean in_queue = false;
 						// check xem link nay da co trong mang uu tien chua
 						for (int n = 0; n < arr_priority_link.size(); n++) {
@@ -416,54 +428,53 @@ public class index {
 						if (!in_queue) {
 							arr_priority_link.add(linkHref);
 						}
-					} else {
+					} else {*/
 						if (arr_value_of_link.size() == 0) {
 							arr_value_of_link.add(weight_doc);
 							arr_link_in_queue.add(linkHref);
 						} else {
-							if (count_while == 0) {
-								for (int n = 0; n < arr_value_of_link.size(); n++) {
-									if (weight_doc >= arr_value_of_link.get(n)) {
-										position = n;
-										count_while = 1;
-										break;
-									} else {
-										continue;
-									}
-								}
-								// check xem link nay da co trong queue chua?
-								boolean in_queue = false;
-								for (int n = 0; n < arr_link_in_queue.size(); n++) {
-									if (arr_link_in_queue.get(n).equals(
-											linkHref)) {
-										in_queue = true;
-										break;
-									}
-								}
-								if (!in_queue) {
-									System.out.println("position ="+ position+"\n");
-									System.out.println("size arr value of link ="+ arr_value_of_link.size()+"\n");
-									System.out.println("size arr link in queue ="+ arr_link_in_queue.size()+"\n");
-									arr_value_of_link.add(position, weight_doc);
-									arr_link_in_queue.add(position, linkHref);
-								}
-							} else {
-								// check xem link nay da co trong queue chua?
-								boolean in_queue = false;
-								for (int n = 0; n < arr_link_in_queue.size(); n++) {
-									if (arr_link_in_queue.get(n).equals(
-											linkHref)) {
-										in_queue = true;
-										break;
-									}
-								}
-								if (!in_queue) {
-									arr_value_of_link.add(position, weight_doc);
-									arr_link_in_queue.add(position, linkHref);
+							// check xem link nay da co trong queue chua?
+							boolean in_queue = false;
+							for (int n = 0; n < arr_link_in_queue.size(); n++) {
+								if (arr_link_in_queue.get(n).equals(
+										linkHref)) {
+									in_queue = true;
+									break;
 								}
 							}
+							//link này chưa có trong queue
+							if (in_queue == false) {
+								// tìm vị trí thích hợp để nhồi link vào queue theo
+								// trọng số giảm dần
+								if(count_while==0) {
+									for (int n = 0; n < arr_value_of_link.size(); n++) {
+										/*System.out.println("weight doc="+ weight_doc+"\n");
+										System.out.println("trọng số của link ="+arr_value_of_link.get(n)+"\n");*/
+										if (weight_doc >= arr_value_of_link.get(n)) {
+											position = n;
+											//System.out.println("lớn hơn \n");
+											break;
+										} else {
+											continue;
+										}
+									}
+								}
+								count_while++;
+								if (position == -1) {
+									arr_value_of_link.add(weight_doc);
+									arr_link_in_queue.add(linkHref);
+								} else {
+									arr_value_of_link.add(position, weight_doc);
+									arr_link_in_queue.add(position, linkHref);
+								}
+	
+							}
+							   
+								
+								
+							
 						}
-					}
+					//}
 					link.remove();
 
 				}
@@ -472,13 +483,14 @@ public class index {
 					link.remove();
 				}
 			}
-
-			// }
-			/*
-			 * System.out.println("arr_priority_link =" + arr_priority_link +
-			 * "\n"); System.out.println("arr_link_in_queue =" +
-			 * arr_link_in_queue + "\n");
-			 */
+             if(weight_doc>4) {
+				System.out.println("weight doc ="+weight_doc+"\n");
+				System.out.println("position ="+position+"\n");
+				System.out.println("array value of link after="+ arr_value_of_link+"\n");
+				//System.out.println("array link in queue after="+ arr_link_in_queue+"\n");
+				System.exit(0);
+			}  
+			
 
 		}
 

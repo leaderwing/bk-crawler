@@ -37,7 +37,8 @@ public class inputGA {
 			content = content.replace("|", " ");
 			content = content.replace(",", " ");
 			content = content.replace(".", " ");
-			String[] arr_content = content.split(" ");
+			String arr_content[];
+			arr_content = content.split(" ");
             
 			
 

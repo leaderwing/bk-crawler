@@ -9,10 +9,10 @@ import java.util.List;
 public class helper {
 	public String removeStopWord(String content) {
 		ArrayList<String> stopword= ReadStopWordToFile.readStopWordToFile();
-		
+		String edit_content="";
 		content=content.toLowerCase();
-		content = content.replaceAll("[^a-z 0-9]+"," ");
-		String[] arr_content = content.split(" ");
+		edit_content= content.replaceAll("[^a-z 0-9]+"," ");
+		String[] arr_content = edit_content.split(" ");
 		
 		String new_content="";
 		for (int i = 0; i < stopword.size(); i++) {
