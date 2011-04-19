@@ -1,4 +1,4 @@
-/*package searchEngine;
+package searchEngine;
 
 import java.io.BufferedReader;
 import java.io.IOException;
@@ -27,7 +27,7 @@ import org.jsoup.nodes.Element;
 import GA.Algorithm;
 import GA.Genome;
 
-public class index {
+public class Index_new_approach {
 	private static double mutation_rate; // phan tram dot bien
 	private static double crossover_rate; // phan tram lai ghep
 	private static int number_generation; // phan tram lai ghep
@@ -54,9 +54,9 @@ public class index {
 		for(int i=0;i<arr_keywords.size();i++) {
 			keyword_2.add(arr_keywords.get(i));
 		}
-		index.mutation_rate = 0.01;
-		index.crossover_rate = 0.8;
-		index.number_generation = 200;
+		Index_new_approach.mutation_rate = 0.01;
+		Index_new_approach.crossover_rate = 0.8;
+		Index_new_approach.number_generation = 200;
 		// so nst trong quan the
 		int num_nst = 50;
 		// seed url
@@ -97,7 +97,7 @@ public class index {
 		arr_priority_link.add(url);
 		
 		
-		Document doc;
+		
 		String url_crawling = "";
 		String sourceLine = "";
 		String content = "";
@@ -113,7 +113,7 @@ public class index {
 			if (arr_priority_link.size() > 0) {
 				try {
 					System.out.println("before 1 " + i + "aaa"+ arr_priority_link.get(0));
-					sourceLine = "";
+					/*sourceLine = "";
 					content = "";
 					URL address = new URL(arr_priority_link.get(0));
 					// Open the address and create a BufferedReader with the source code.
@@ -121,7 +121,7 @@ public class index {
 					BufferedReader source = new BufferedReader(pageInput);
 					// Append each new HTML line into one string. Add a tab character.
 					while ((sourceLine = source.readLine()) != null)
-						content += sourceLine + "\t";
+						content += sourceLine + "\t";*/
 					
 					code_html = Jsoup.connect(arr_priority_link.get(0)).get();
 					
@@ -141,7 +141,7 @@ public class index {
 			} else {
 				if (arr_link_in_queue.size() > 0) {
 					try {
-						sourceLine = "";
+						/*sourceLine = "";
 						content = "";
 						URL address = new URL(arr_link_in_queue.get(0));
 						// Open the address and create a BufferedReader with the source code.
@@ -149,7 +149,7 @@ public class index {
 						BufferedReader source = new BufferedReader(pageInput);
 						// Append each new HTML line into one string. Add a tab character.
 						while ((sourceLine = source.readLine()) != null)
-							content += sourceLine + "\t";
+							content += sourceLine + "\t";*/
 						
 						code_html =Jsoup.connect(arr_link_in_queue.get(0)).get();
 						
@@ -167,17 +167,17 @@ public class index {
 					}
 				}
 			}
-            content=content.toLowerCase();
+           /* content=content.toLowerCase();
 			doc = Jsoup.parse(content);
-			content_doc = doc.body().text();
+			content_doc = doc.body().text();*/
 			
 			if (code_html == null) { continue; }
-			doc = Jsoup.parse(code_html.html());
+			Document doc = Jsoup.parse(code_html.html());
 			content_doc = doc.body().text();
 			N++;
 			helper helper = new helper();
             
-			content_doc= content_doc.toLowerCase();
+			/*content_doc= content_doc.toLowerCase();
             System.out.println("content_ doc ="+ content_doc+"\n");
 			VietTokenizer vietTokenizer = new VietTokenizer();
 			String[] sentences = vietTokenizer.tokenize(content_doc);
@@ -190,7 +190,7 @@ public class index {
 						arr_term_in_doc.add(arr_split_doc[m]);
 					}
 				}
-			}
+			}*/
 			//System.out.println("array list term ="+ arr_term_in_doc);
 			
 			content_doc = helper.removeStopWord(content_doc);
@@ -220,51 +220,50 @@ public class index {
 				if (count_frequent_term.get(arr_keywords.get(j)) == null) {
 					count_frequent_term.put(arr_keywords.get(j), 0);
 				}
-				int frequence_key = count_frequent_term
-						.get(arr_keywords.get(j));
-//                if(frequence_key>5) {
-//                	is_true_topic=true;
-//                }
+				int frequence_key = count_frequent_term.get(arr_keywords.get(j));
+                /*if(frequence_key>5) {
+                	is_true_topic=true;
+                }*/
+				double ts = 0;
+				System.out.println("j= "+ j+"\n");
+				if (frequence_key > 0) {
+					nj[j] = nj[j] + 1;
+				}
+				if (frequence_key == 0) {
+					ts = 0;
+				} else if ((frequence_key > 0) && (nj[j] > 0)) {
+					ts = (Math.log(frequence_key) / Math.log(2) + 1)
+							* Math.log((double)N / nj[j]) / Math.log(2);
+				} else if ((frequence_key > 0) && (nj[j] == 0)) {
+					ts = (Math.log(frequence_key) / Math.log(2) + 1)
+							* Math.log(N) / Math.log(2);
+				}
+				double ms = (0.8 + 0.2 * length_doc / avg_length_doc);
+                ms=ms*Math.log(i)/Math.log(2);
+				if (ms != 0) {
+					weight_doc_j = ts / ms;
+					weight_doc = weight_doc + weight_doc_j;
+				} 
+				// test
+				System.out.println("keyword ="+ arr_keywords.get(j)+"\n");
+				System.out.println("fre_key =" + frequence_key + "\n");
+				System.out.println("N =" + N + "\n");
+				System.out.println("nj ="+nj[j]+"\n");
+				System.out.println("length doc =" + length_doc + "\n");
+				System.out.println("avg length doc =" + avg_length_doc + "\n");
+				System.out.println("tu so =" + ts + "\n");
+				System.out.println("mau so =" + ms + "\n");
+				System.out.println("weight j =" + weight_doc_j + "\n");
                 
-						double ts = 0;
-						System.out.println("j= "+ j+"\n");
-						if (frequence_key > 0) {
-							nj[j] = nj[j] + 1;
-						}
-						if (frequence_key == 0) {
-							ts = 0;
-						} else if ((frequence_key > 0) && (nj[j] > 0)) {
-							ts = (Math.log(frequence_key) / Math.log(2) + 1)
-									* Math.log((double)N / nj[j]) / Math.log(2);
-						} else if ((frequence_key > 0) && (nj[j] == 0)) {
-							ts = (Math.log(frequence_key) / Math.log(2) + 1)
-									* Math.log(N) / Math.log(2);
-						}
-						double ms = (0.8 + 0.2 * length_doc / avg_length_doc);
-		                ms=ms*Math.log(i)/Math.log(2);
-						if (ms != 0) {
-							weight_doc_j = ts / ms;
-							weight_doc = weight_doc + weight_doc_j;
-						} 
-						// test
-						System.out.println("keyword ="+ arr_keywords.get(j)+"\n");
-						System.out.println("fre_key =" + frequence_key + "\n");
-						System.out.println("N =" + N + "\n");
-						System.out.println("nj ="+nj[j]+"\n");
-						System.out.println("length doc =" + length_doc + "\n");
-						System.out.println("avg length doc =" + avg_length_doc + "\n");
-						System.out.println("tu so =" + ts + "\n");
-						System.out.println("mau so =" + ms + "\n");
-						System.out.println("weight j =" + weight_doc_j + "\n");
-                        
-						//
+				//
+						
                 
 				
 			}
-//			if(is_true_topic==false) {
-//				weight_doc=0;
-//			}
-			
+			/*if(is_true_topic==false) {
+				weight_doc=0;
+			}
+			*/
 			// luu lai num_nst doc co weight lon nhat
 			if (weight_doc > 5) {
 				if (doc_weight.size() == 0) {
@@ -300,25 +299,12 @@ public class index {
 			}
 			if ((doc_weight.size() == num_nst) && (i % num_nst == 0)) {
 				System.out.println("link best doc =" + doc_link + "\n");// System.exit(0);
-				inputGA input_GA= new inputGA();
-				ArrayList<Genome>initial_population = input_GA.find_bestword_and_create_genome(doc_content, doc_link);
-				ArrayList<String> best_word = input_GA.getBestWord();
+				Input_new_approach input_GA= new Input_new_approach();
+				ArrayList<String>new_key = input_GA.find_bestword_and_create_genome(doc_content, doc_link,arr_keywords);
+				ArrayList<String> best_word = input_GA.getListBestWord();
 				Bestword.saveDocument(best_word);
-				Algorithm alg = new Algorithm(doc_link,initial_population,keyword_2 ,best_word, num_nst,
-						index.mutation_rate, index.crossover_rate,
-						index.number_generation);
-				alg.Go();
-				String new_key = alg.newKey();
-				if (!new_key.equals("")) {
-					int pos_new_key = alg.getPositionNewKey();
-					//arr_keywords.add(new_key);
-					keyword_2.add(new_key);
-					double best_fitness = alg.getBestFitness();
-					System.out.println("best word =" + best_word + "\n");
-					System.out.println("doc link =" + doc_link + "\n");
-					System.out.println("new key=" + new_key);
-					Newkeyword.saveDocument(new_key, doc_link.get(pos_new_key),
-							best_fitness);
+				for(int j=0;j<new_key.size();j++) {
+					Newkeyword.saveDocument(new_key.get(j), "",0);
 				}
 				doc_content.clear();
 				doc_link.clear();
@@ -484,4 +470,3 @@ public class index {
 
 	}
 }
-*/
