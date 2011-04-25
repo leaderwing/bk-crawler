@@ -15,14 +15,26 @@ public class Input_new_approach {
 	private static ArrayList<String> arr_best_word = new ArrayList<String>();
     private static ArrayList<Double> weight_best_word= new ArrayList<Double>();
     private static ArrayList<Integer> arr_frequent_bestword= new ArrayList<Integer>();
-    private static ArrayList<String> best_word=new ArrayList<String>();
+    private static ArrayList<String> new_key=new ArrayList<String>();
+    private static ArrayList<Double> weight_new_key=new ArrayList<Double>();
+    private static ArrayList<String> link_new_key=new ArrayList<String>();
 	public  ArrayList<String> getListBestWord() {
 		
 		return arr_best_word;
 	}
 
+	public ArrayList<Double> getListWeightNewKey() {
+
+		return weight_new_key;
+	}
+
+	public ArrayList<String> getLinkNewKey() {
+
+		return link_new_key;
+	}
+
 	public  ArrayList<String> find_bestword_and_create_genome(
-			ArrayList<String> doc_content, ArrayList<String> doc_link,ArrayList<String>initial_key) {
+			ArrayList<String> doc_content, ArrayList<String> doc_link,ArrayList<String>key_extension) {
 		
 		// mảng thứ i là mảng lưu lại số lần xuất hiện của từng term trong
 		// document thứ i : key-> value ("sport"=>33....)
@@ -91,9 +103,13 @@ public class Input_new_approach {
 							f=f+a.get(key);
 						}
 					} // tinh trong so cho moi term trong document
-					double px =(double)frequent_term_doc.get(key)/frequent_term_doc.size();
+					double px =(double)frequent_term_doc.get(key)/arr_length_of_doc.get(i);
 					double pc=(double)f/sum_length;
-					Double weight_term = (double) px*Math.log((double)px/pc)/Math.log(2);
+					double weight_term=0;
+					if((pc!=0)&&(px!=0)) {
+					   weight_term = (double) px*Math.log((double)px/pc)/Math.log(2);
+					}
+					
 					 /*System.out.println("Tfx= "+frequent_term_doc.get(key)+"\n");
 					 System.out.println("lfx= "+frequent_term_doc.size()+"\n");
 					  System.out.println("px= "+px+"\n");
@@ -115,8 +131,7 @@ public class Input_new_approach {
 		}
 		arr_best_word=best_term;
 		 weight_best_word=weight_best_term;
-		 System.out.println("before array best word ="+ arr_best_word+"\n");
-		 System.out.println("before weight best word ="+ weight_best_word+"\n");
+		 
 		//end find bestword
 		 //tính lại trọng số của các best wors trong các doc,update trọng số nếu nó lớn hơn cái cũ
 		 for(int i=0;i<doc_content.size();i++) {
@@ -127,43 +142,66 @@ public class Input_new_approach {
 					String key= arr_best_word.get(j);
 					
 					if (frequent_term_doc.get(key) != null) {
-						double px = (double) frequent_term_doc.get(key)/ frequent_term_doc.size();
+						double px = (double) frequent_term_doc.get(key)/ arr_length_of_doc.get(i);
 						double pc = (double) arr_frequent_bestword.get(j)/ sum_length;
-						Double weight_term = (double) px* Math.log((double) px / pc) / Math.log(2);
+						double weight_term=0;
+						if((pc!=0)&&(px!=0)) {
+						   weight_term = (double) px*Math.log((double)px/pc)/Math.log(2);
+						}
 						if (weight_term > weight_best_word.get(j)) {
 							weight_best_word.set(j, weight_term);
 						}
+					}
+					else {
+						//neu keyword khong co trong document thi giu nguyen weight cua key o document truoc
 					}
 				 }
 				 
 			 }
 		 }
-		 System.out.println("after array best word ="+ arr_best_word+"\n");
-		 System.out.println("after weight best word ="+ weight_best_word+"\n");
+		 
 		//lấy ra vài key có trọng số lớn nhất mà không trùng keyword khởi tạo
-		 String new_key="";
-		for(int i=0;i<3;i++) {
-			double weight=0;
-			int pos= 0;
-			for(int j=0;j<weight_best_word.size();j++) {
-				if(weight<weight_best_word.get(j)) {
-					weight=weight_best_word.get(j);
-					pos=j;
-				}
+		 int  counter, index;
+	       int length= weight_best_word.size();
+	       for(counter=0; counter<length-1; counter++) { //Loop once for each element in the array.
+	           for(index=0; index<length-1-counter; index++) { //Once for each element, minus the counter.
+	               if(weight_best_word.get(index) > weight_best_word.get(index+1)) { //Test if need a swap or not.
+	                   double temp = weight_best_word.get(index); //These three lines just swap the two elements:
+	                   weight_best_word.set(index, weight_best_word.get(index+1)) ;
+	                   weight_best_word.set(index+1, temp);
+	               }
+	           }
+	       }
+
+		// System.out.println("weight best word ="+weight_best_word);
+		 for(int n=0;n<3;n++) {
+			
+			 String key=arr_best_word.get(arr_best_word.size()-1);
+			 double weight_key=weight_best_word.get(arr_best_word.size()-1);
+			weight_best_word.remove(arr_best_word.size()-1);
+			arr_best_word.remove(arr_best_word.size()-1);
+			if (weight_key > 0) {
+				/*boolean get = true;
+				// key mới không trùng với tập key đã có
+				for (int i = 0; i < key_extension.size(); i++) {
+					String key_intial = key_extension.get(i);
+					if (key_intial.equals(key)) {
+						get = false;
+						break;
+					} else {
+						continue;
+					}
+				}*/
+				//if (get) {
+					new_key.add(key);
+					weight_new_key.add(weight_key);
+					link_new_key.add(doc_link.get(arr_best_word.size() - 1));
+
+				//}
 			}
 			
-			 new_key=arr_best_word.get(pos);
-			 System.out.println("new key="+new_key+"\n");
-			weight_best_word.remove(pos);
-			arr_best_word.remove(pos);
-			if(initial_key.contains(new_key)) {
-				i--;
-			}
-			else {
-				best_word.add(new_key);
-			}
 		}
-		System.out.println("array new key ="+ best_word);//System.exit(0);
-		return best_word;
+		//System.out.println("array new key ="+ new_key);//System.exit(0);
+		return Input_new_approach.new_key;
 	}
 }

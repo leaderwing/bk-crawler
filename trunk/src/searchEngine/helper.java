@@ -1,8 +1,11 @@
 package searchEngine;
 
+import java.sql.ResultSet;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
+
+import model.DocumentSample;
 
 
 
@@ -12,6 +15,8 @@ public class helper {
 		String edit_content="";
 		content=content.toLowerCase();
 		edit_content= content.replaceAll("[^a-z 0-9]+","");
+		edit_content=edit_content.replace("'", "\'");
+		edit_content=edit_content.replace('"', '\"');
 		String[] arr_content = edit_content.split(" ");
 		
 		String new_content="";
@@ -52,4 +57,11 @@ public class helper {
 		return new_content;
 
 	}
+	/*public static double calculateWeightByKey(String key) {
+		double weight_key=0;
+		ResultSet rs= DocumentSample.getContent();
+		
+		return weight_key;
+		
+	}*/
 }

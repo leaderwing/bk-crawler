@@ -21,7 +21,7 @@ public class Algorithm {
 	private static int population_size; // kich co quan the
 	private static int number_generation; // số vòng đời thế hệ
 	//private static int gene_size; // kich co bo gen
-	//private static double total_fitness; // do fitness cua quan the moi
+	private static double weight_new_key; // weight của new key
 	private static double best_fitness; // do fitness tot nhat
 	//private static boolean m_elitism;// chon loc
 	private static Genome best_gene;
@@ -34,7 +34,7 @@ public class Algorithm {
 	private static ArrayList<Double> fitness_table; // bang thich nghi : tinh xac suat chon loc theo Roulette Wheel
 	private static boolean is_GA= true;//nếu số gen của quần thể hơn một nửa là có fitness =0 thì không GA,is_GA=false 
 	public static Random random = new Random();
-	public static double suitable_fitness=0.8;
+	public static double suitable_fitness=0.9;
 
 	Algorithm() {
 
@@ -68,6 +68,10 @@ public class Algorithm {
     {
     	return best_fitness;
     }
+    public  double getWeightNewKey()
+    {
+    	return weight_new_key;
+    }
     public String newKey() {
     	
     	double max_weight=0;
@@ -95,6 +99,7 @@ public class Algorithm {
 			}
 			pos_newkey = pos;
 		}
+		weight_new_key=max_weight;
     	return new_key;
     }
 	public void caculateRouletteWheel(ArrayList<Genome> generation) {
@@ -106,6 +111,7 @@ public class Algorithm {
 		for (int i = 0; i < generation.size(); i++) {
 			Genome gene = generation.get(i);
 			gene.caculateFitness();
+			//gene.caculateFitness_2(arr_initial_key, arr_best_term);
 			double fitness_gene_i = gene.GetFitness();
 			Algorithm.fitness_table.add(i, fitness_gene_i);
 			sum_fitness = sum_fitness + fitness_gene_i;
@@ -116,7 +122,7 @@ public class Algorithm {
 			}
 
 		}
-		
+		System.out.println("fitness table="+fitness_table+"\n");
 		// đếm xem có bao nhiêu gen trong quần thể là có fitness >0 
 		int count_gen=0;
 		for(int i=0;i<Algorithm.fitness_table.size();i++) {
@@ -229,8 +235,7 @@ public class Algorithm {
 		for(int i=0;i<nextGeneration.size();i++) {
 			System.out.println(nextGeneration.get(i).getChromosome()+"\n");
 		}
-		//đối tg thisGeneration và nextGeneration cùng tham chiếu tới một đối tg
-		//1 trong 2 cái thay đổi thì cái kia sẽ thay đổi theo=>truyền tham chiếu
+		
 		Algorithm.thisGeneration= nextGeneration;
 		System.out.println("this generation result ="+ Algorithm.thisGeneration.size());
 		for(int i=0;i<Algorithm.thisGeneration.size();i++) {
@@ -276,10 +281,10 @@ public class Algorithm {
 			parent2 =  Algorithm.thisGeneration.get(pidx2);
 			parent3 =  Algorithm.thisGeneration.get(pidx3);
 			parent4 =  Algorithm.thisGeneration.get(pidx4);
-			arr_parent.add(parent4);
-			arr_parent.add(parent3);
-			arr_parent.add(parent2);
 			arr_parent.add(parent1);
+			arr_parent.add(parent2);
+			arr_parent.add(parent3);
+			arr_parent.add(parent4);
 			if (random.nextDouble() <= Algorithm.crossover_rate) { 
 				
 				child = parent1.CrossoverMulti(arr_parent);
@@ -300,14 +305,12 @@ public class Algorithm {
 		
 		Algorithm.thisGeneration= nextGeneration;
 		
-		System.out.println("next generation ="+ nextGeneration.size()+"\n");
-		for(int i=0;i<nextGeneration.size();i++) {
-			System.out.println(nextGeneration.get(i).getChromosome()+"\n");
-		}
+		
 		System.out.println("this generation ="+ Algorithm.thisGeneration.size());
 		for(int i=0;i<Algorithm.thisGeneration.size();i++) {
 			System.out.println(Algorithm.thisGeneration.get(i).getChromosome()+"\n");
 		}
+		
 		/*for (int i = 0; i <= Algorithm.population_size; i++) {
 			System.out.println("i="+i+"\n");
             Algorithm.thisGeneration.remove(i);		

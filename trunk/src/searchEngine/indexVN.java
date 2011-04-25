@@ -30,26 +30,26 @@ public class indexVN {
 	private static double crossover_rate; // phan tram lai ghep
 	private static int number_generation; // phan tram lai ghep
 
-	public static void main(String args[]) {
+	public static void main_2(String args[]) {
 		// array contain keyword
 		ArrayList<String> arr_keywords = new ArrayList<String>();
-		arr_keywords.add("thể_thao");
-		arr_keywords.add("bóng_đá");
-		//arr_keywords.add("hlv");
+		arr_keywords.add("kinh_tế");
+		arr_keywords.add("thị_trường");
+		arr_keywords.add("doanh_nghiệp");
 		//arr_keywords.add("trận");
 		//arr_keywords.add("cđv");
 		//arr_keywords.add("vô_địch");
-		arr_keywords.add("tỷ_số");
+		//arr_keywords.add("tỷ_số");
 		//arr_keywords.add("thắng");
 		//arr_keywords.add("clb");
-		arr_keywords.add("cup");
+		//arr_keywords.add("cup");
 		indexVN.mutation_rate = 0.01;
 		indexVN.crossover_rate = 0.8;
 		indexVN.number_generation = 100;
 		// so nst trong quan the
 		int num_nst = 20;
 		// seed url
-		String url = "http://dantri.com.vn";
+		String url = "http://dantri.com.vn/c76/kinhdoanh.htm";
 		// array contain the number of occurrences of term j in document i
 		int[] arr_frequency_term = new int[arr_keywords.size()];
 		// tong so document da crawler
@@ -204,7 +204,6 @@ public class indexVN {
 					}
 				}
 			}
-			System.out.println("array list term ="+ arr_term_in_doc);
 			
 			length_doc = arr_term_in_doc.size();
 			sum_length_doc = sum_length_doc + length_doc;
@@ -246,7 +245,7 @@ public class indexVN {
 							* Math.log(N) / Math.log(2);
 				}
 				double ms = (0.8 + 0.2 * length_doc / avg_length_doc);
-
+				ms=ms*Math.log(i)/Math.log(2);
 				if (ms != 0) {
 					weight_doc_j = ts / ms;
 					weight_doc = weight_doc + weight_doc_j;
@@ -296,12 +295,12 @@ public class indexVN {
 					doc_content.remove(doc_weight.size() - 1);
 				}
 			}
-			if ((doc_weight.size() == num_nst) && (i % num_nst == 0)) {
+			if ((doc_weight.size() == num_nst)) {
 				System.out.println("link best doc =" + doc_link + "\n");// System.exit(0);
-				inputGA input_GA= new inputGA();
-				ArrayList<Genome>initial_population = input_GA
-						.find_bestword_and_create_genome(doc_content, doc_link);
-				ArrayList<String> best_word = input_GA.getBestWord();
+				InputGA_new_approach input_GA= new InputGA_new_approach();
+				ArrayList<Genome>initial_population = input_GA.find_bestword_and_create_genome(doc_content, doc_link,arr_keywords);
+				ArrayList<String> best_word = input_GA.getListBestWord();
+				System.out.println("best word =" + best_word + "\n");System.exit(0);
 				Bestword.saveDocument(best_word);
 				Algorithm alg = new Algorithm(doc_link,initial_population,arr_keywords ,best_word, num_nst,
 						indexVN.mutation_rate, indexVN.crossover_rate,
@@ -318,6 +317,9 @@ public class indexVN {
 					Newkeyword.saveDocument(new_key, doc_link.get(pos_new_key),
 							best_fitness);
 				}
+				doc_content.clear();
+				doc_link.clear();
+				doc_weight.clear();
 			}
 			System.out.println("weight " + weight_doc + "\n");
 			// save into db
