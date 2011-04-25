@@ -23,6 +23,7 @@ public class Genome {
 
 	public Genome() {
 		// this.m_length = m_length;
+		
 		chromosome = new ArrayList<Double>();
 	}
 
@@ -80,15 +81,17 @@ public class Genome {
 		  t = step;
 		  for (int i = 0; i < parent.size()-1; i++) {		   
 			index = getMaxIndex(parent, j, t);
+			ArrayList<Double> nst=parent.get(index).getChromosome();
 			for (int k=j; k<t; k++) {
-				temp.AddChromosome(parent.get(index).chromosome.get(k));
+				temp.AddChromosome(nst.get(k));
 			}
 			j=t;
 			t=t+step;			
 		   }
 		  index = getMaxIndex(parent, t, size_chromosome-1);
+		  ArrayList<Double> nst=parent.get(index).getChromosome();
 			for (int k=t; k<=size_chromosome-1; k++) {
-				temp.AddChromosome(parent.get(index).chromosome.get(k));
+				temp.AddChromosome(nst.get(k));
 			}
 		  
 		  return temp;
@@ -121,21 +124,28 @@ public class Genome {
 		} else {
 			double ms_2=Math.sqrt(ms * this.chromosome.size());
 			//double ms_3 =ms_2*number_term;
-			/*System.out.println("chromosome ="+ this.chromosome+"\n");
-			System.out.println(" size ="+this.chromosome.size()+"\n" );
-			System.out.println("ms="+ ms+"\n");
-			System.out.println("ms 2="+ ms_2+"\n");
-			
-			System.out.println("num term ="+ number_term+"\n");
-			System.out.println("ts="+ts+"\n");
-			System.out.println("kq="+(double)ts/ms_2);*/
+//			System.out.println("chromosome ="+ this.chromosome+"\n");
+//			System.out.println(" size ="+this.chromosome.size()+"\n" );
+//			System.out.println("ms="+ ms+"\n");
+//			System.out.println("ms 2="+ ms_2+"\n");
+//			
+//			System.out.println("num term ="+ number_term+"\n");
+//			System.out.println("ts="+ts+"\n");
+//			System.out.println("kq="+(double)ts/ms_2);
 			BigDecimal d = new BigDecimal(ts / ms_2);
 			d = d.setScale(4, BigDecimal.ROUND_HALF_UP);
 			this.chromosome_fitness = d.doubleValue();
 			
 			
 		}
-		/*Integer number_term = 0;
+		
+	}
+	/**
+	 * tính theo cong thuc mà best term có chứa initial_key
+	 */
+	public void caculateFitness_2(ArrayList<String> initial_key,ArrayList<String> best_term) {
+		
+		Integer number_term = 0;
 		double ts = 0;
 		double ms = 0;
 	
@@ -158,15 +168,14 @@ public class Genome {
 			this.chromosome_fitness = 0;
 		} else {
 			double ms_2=Math.sqrt(ms * this.chromosome.size());
-			double ms_3 =ms_2*number_term;
-			BigDecimal d = new BigDecimal(ts / ms_3);
+			//double ms_3 =ms_2*number_term;
+			BigDecimal d = new BigDecimal(ts / ms_2);
 			d = d.setScale(4, BigDecimal.ROUND_HALF_UP);
 			this.chromosome_fitness = d.doubleValue();
 			
 		}
-		System.out.println("fitness of chromosome ="+ this.chromosome_fitness+"\n");*/
+		System.out.println("fitness of chromosome ="+ this.chromosome_fitness+"\n");
 	}
-	
 	
 	
 	
@@ -189,10 +198,15 @@ public class Genome {
 	 public static int getMaxIndex(ArrayList<Genome> arr_parent,int last_pos, int pos) {
 		 int index=0;
 		 double max_weight = 0;
+		 System.out.println("size parent ="+ arr_parent.size()+"\n");
 		 for (int i=0; i<arr_parent.size(); i++) {
 			 double weight = 0;
 			 for(int j=last_pos; j<=pos; j++) {
-				 weight += arr_parent.get(i).chromosome.get(j);  
+				 System.out.println("i="+i+"\n");
+				 System.out.println("j="+j+"\n");
+				 System.out.println("arr_parent i="+ arr_parent.get(i)+"\n");
+				 System.out.println("chromosome j="+ arr_parent.get(i).chromosome.get(j)+"\n");
+				 weight += arr_parent.get(i).getChromosome().get(j);  
 			 }
 			 if (max_weight < weight) {
 				 max_weight = weight;
