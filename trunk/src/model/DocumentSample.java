@@ -11,14 +11,14 @@ public class DocumentSample extends ConnectDatabase {
 	private static java.sql.Statement stmt = null;
 	private static int count_row;
 	private static ResultSet rs;
-
+	private static Connection connect;
 	public static void saveDocument(String link, String content,double weight) {
 
-		Connection conn = ConnectDatabase.connectDb();
+		 connect = ConnectDatabase.connectDb();
         content= content.replace("'", " ");
         content= content.replace("\"", " ");
 		try {
-			stmt = conn.createStatement();
+			stmt = connect.createStatement();
 			String sql="INSERT INTO document_sample (link,content,weight) VALUES('"+ link + "','" + content + "',"+weight+")";
 			//System.out.println("sql="+sql);
 			count_row = stmt.executeUpdate(sql);
@@ -27,25 +27,15 @@ public class DocumentSample extends ConnectDatabase {
 			// TODO Auto-generated catch block
 			System.out.println("loi save db");
 			e.printStackTrace();
-		} finally {
-
-			if (stmt != null) {
-				try {
-					stmt.close();
-				} catch (SQLException sqlEx) {
-				}
-
-				stmt = null;
-			}
-		}
+		} 
 
 	}
 	public static void updateWeightbyId(int id,double weight) {
 
-		Connection conn = ConnectDatabase.connectDb();
+		 connect = ConnectDatabase.connectDb();
        
 		try {
-			stmt = conn.createStatement();
+			stmt = connect.createStatement();
 			String sql="UPDATE document_sample SET weight="+weight+" WHERE id="+id;
 			//System.out.println("sql="+sql);System.exit(0);
 			count_row = stmt.executeUpdate(sql);
@@ -60,10 +50,10 @@ public class DocumentSample extends ConnectDatabase {
 
 	public static ResultSet getAllContent() {
 
-		Connection conn = ConnectDatabase.connectDb();
+		 connect = ConnectDatabase.connectDb();
 		try {
-			stmt = conn.createStatement();
-			String sql = "SELECT * FROM document_sample WHERE weight > 1 ";
+			stmt = connect.createStatement();
+			String sql = "SELECT * FROM document_sample ORDER BY id asc LIMIT 1000";
 			System.out.println("sql get all content="+ sql);
 			rs = stmt.executeQuery(sql);
 
@@ -75,13 +65,22 @@ public class DocumentSample extends ConnectDatabase {
 		return rs;
 	}
 
-	public static void closeStatement() {
+	public static void closeConnect() {
 		if (stmt != null) {
 			try {
 				stmt.close();
+				//connect.close();
 			} catch (SQLException sqlEx) {
 			}
 			stmt = null;
+		}
+		if (connect != null) {
+			try {
+				connect.close();
+				//connect.close();
+			} catch (SQLException sqlEx) {
+			}
+			connect = null;
 		}
 	}
 	

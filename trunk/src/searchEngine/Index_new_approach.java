@@ -38,7 +38,8 @@ public class Index_new_approach {
 	private static ArrayList<String> arr_keywords = new ArrayList<String>();
 	private static int num_doc_crawled;
 	private static double weight_doc;
-	private static String content_doc;
+	private static String content_doc;//content of document
+	private static String html;// mã html của document
 	// sum length of documents
 	private static int sum_length_doc;
 	private static Document doc;
@@ -92,7 +93,7 @@ public class Index_new_approach {
 			nj.add(0);
 		}
 		
-		while(max_crawl<3000) {
+		while(max_crawl<5000) {
 			max_crawl++;
 			ResultSet rs= Linkqueue.getLink();
 			int id=0;
@@ -108,7 +109,7 @@ public class Index_new_approach {
 				e.printStackTrace();
 			}
 			Linkqueue.delLink(id);
-			Linkqueue.closeStatement();
+			Linkqueue.closeConnect();
 			System.out.println("link crawler ="+link_crawl+"\n");
 			Linkcrawled.saveDocument(link_crawl);
 			if(link_crawl=="") {
@@ -323,7 +324,7 @@ public class Index_new_approach {
 		
 
 		String sourceLine = "";
-	    String content = "";
+	    html = "";
 		try {
 			
 			URL address = new URL(link_crawl);
@@ -332,7 +333,7 @@ public class Index_new_approach {
 			BufferedReader source = new BufferedReader(pageInput);
 			// Append each new HTML line into one string. Add a tab character.
 			while ((sourceLine = source.readLine()) != null)
-				content += sourceLine + "\t";
+				html += sourceLine + "\t";
 			//code_html = Jsoup.connect(link_crawl).get();
 		} catch (Exception le) {
 			le.printStackTrace();
@@ -341,8 +342,8 @@ public class Index_new_approach {
 			
 		}	
 		
-		content = content.toLowerCase();
-		doc = Jsoup.parse(content);
+		html = html.toLowerCase();
+		doc = Jsoup.parse(html);
 		content_doc = doc.body().text();
 		/*if (code_html == null) { is_success=false;return is_success; }
 		doc = Jsoup.parse(code_html.html());
@@ -390,7 +391,7 @@ public class Index_new_approach {
 						* Math.log(num_doc_crawled) / Math.log(2);
 			}
 			double ms = (0.8 + 0.2 * length_doc / avg_length_doc);
-            ms=ms*Math.log(num_doc_crawled)/Math.log(2);
+            //ms=ms*Math.log(num_doc_crawled)/Math.log(2);
 			if (ms != 0) {
 				weight_doc_j = ts / ms;
 				weight_doc = weight_doc + weight_doc_j;

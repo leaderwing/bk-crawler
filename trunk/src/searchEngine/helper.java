@@ -18,8 +18,9 @@ public class helper {
 		edit_content=edit_content.replace("'", "\'");
 		edit_content=edit_content.replace('"', '\"');
 		String[] arr_content = edit_content.split(" ");
-		
+		PorterStemmer stemmer =new PorterStemmer();
 		String new_content="";
+		
 		for (int i = 0; i < stopword.size(); i++) {
 			for(int j=0;j<arr_content.length;j++)
 			{ 
@@ -41,15 +42,9 @@ public class helper {
 		}
 		for(int i=0;i<arr_content.length;i++)
 		{
-			/*if((arr_content[i]=="")||(arr_content[i]==" ")||(arr_content[i]==null)) {
-			   continue;
-			}
-			else {
-				System.out.println("arr content i =_"+arr_content[i]+"_ \n");
-				new_content+=" "+arr_content[i];
-			}*/
+			
 			if(arr_content[i].length()>0) {
-				//System.out.println("arr content i =_"+arr_content[i]+"_ \n");
+				//System.out.println("arr content i =_"+arr_content[i]);
 				new_content+=" "+arr_content[i];
 			}
 		}

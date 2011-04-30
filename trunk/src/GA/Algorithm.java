@@ -21,7 +21,7 @@ public class Algorithm {
 	private static int population_size; // kich co quan the
 	private static int number_generation; // số vòng đời thế hệ
 	//private static int gene_size; // kich co bo gen
-	private static double weight_new_key; // weight của new key
+	private static ArrayList<Double> weight_new_key=new ArrayList<Double>(); // weight của new key
 	private static double best_fitness; // do fitness tot nhat
 	//private static boolean m_elitism;// chon loc
 	private static Genome best_gene;
@@ -30,7 +30,7 @@ public class Algorithm {
 	private static ArrayList<String> doc_link;
 	//private static ArrayList<Genome> firstGeneration; // quan the ban dau
 	private static ArrayList<Genome> thisGeneration = new ArrayList<Genome>(); // quan the hien tai
-	private static Integer pos_newkey=0;
+	private static ArrayList<String> link_of_newkey= new ArrayList<String>();
 	private static ArrayList<Double> fitness_table; // bang thich nghi : tinh xac suat chon loc theo Roulette Wheel
 	private static boolean is_GA= true;//nếu số gen của quần thể hơn một nửa là có fitness =0 thì không GA,is_GA=false 
 	public static Random random = new Random();
@@ -60,46 +60,57 @@ public class Algorithm {
     public static Genome getBestGene() {
     	return Algorithm.best_gene;
     }
-    public  Integer getPositionNewKey()
+    public  ArrayList<String> getLinkNewKey()
     {
-    	return pos_newkey;
+    	return link_of_newkey;
     }
     public  double getBestFitness()
     {
     	return best_fitness;
     }
-    public  double getWeightNewKey()
+    public  ArrayList<Double> getWeightNewKey()
     {
     	return weight_new_key;
     }
-    public String newKey() {
+    public ArrayList<String> newKey() {
     	
     	double max_weight=0;
     	Integer pos=0;
-    	String new_key="";
+    	ArrayList<String>new_key=new ArrayList<String>();
 		if (Algorithm.is_GA) {
 			ArrayList<Double> chromosome = Algorithm.best_gene.getChromosome();
-			for (int i = 0; i < chromosome.size(); i++) {
-				String key = Algorithm.arr_best_term.get(i);
-				boolean is_get = true;// key not equal initial key
-				if (chromosome.get(i) > 0) {
-					for (int j = 0; j < arr_initial_key.size(); j++) {
-						if (arr_initial_key.get(j).equals(key)) {
-							is_get = false;
-							break;
-						}
-					}
-					if ((is_get) && (chromosome.get(i) > max_weight)) {
-						max_weight = chromosome.get(i);
-						pos = i;
-						new_key = Algorithm.arr_best_term.get(pos);
-					}
-				}
+			//sxep nổi bọt mảng trọng số theo chiều tăng dần
+			 int  counter, index;
+		       int length= chromosome.size();
+		       for(counter=0; counter<length-1; counter++) { //Loop once for each element in the array.
+		           for(index=0; index<length-1-counter; index++) { //Once for each element, minus the counter.
+		               if(chromosome.get(index) > chromosome.get(index+1)) { //Test if need a swap or not.
+		                   double temp = chromosome.get(index); //These three lines just swap the two elements:
+		                   chromosome.set(index, chromosome.get(index+1)) ;
+		                   chromosome.set(index+1, temp);
+		                   
+		                   String key = arr_best_term.get(index);
+		                   arr_best_term.set(index, arr_best_term.get(index+1));
+		                   arr_best_term.set(index+1, key);
+		                   
+		                   key=doc_link.get(index);
+		                   doc_link.set(index, doc_link.get(index+1));
+		                   doc_link.set(index+1, key);
+		                   
+		               }
+		           }
+		       }
+		       //
+		       int size=doc_link.size();
+			for (int i = 0; i < 3; i++) {
+				new_key.add(arr_best_term.get(size-1-i));
+				link_of_newkey.add(doc_link.get(size-1-i));
+				weight_new_key.add(chromosome.get(size-1-i));
 
 			}
-			pos_newkey = pos;
+			
 		}
-		weight_new_key=max_weight;
+		
     	return new_key;
     }
 	public void caculateRouletteWheel(ArrayList<Genome> generation) {
@@ -110,6 +121,7 @@ public class Algorithm {
 		// caculate fitness of each gene
 		for (int i = 0; i < generation.size(); i++) {
 			Genome gene = generation.get(i);
+			//System.out.println("gene "+i+"="+ gene.getChromosome()+"\n");
 			gene.caculateFitness();
 			//gene.caculateFitness_2(arr_initial_key, arr_best_term);
 			double fitness_gene_i = gene.GetFitness();
@@ -122,7 +134,7 @@ public class Algorithm {
 			}
 
 		}
-		System.out.println("fitness table="+fitness_table+"\n");
+		//System.out.println("fitness table="+fitness_table+"\n");//System.exit(0);
 		// đếm xem có bao nhiêu gen trong quần thể là có fitness >0 
 		int count_gen=0;
 		for(int i=0;i<Algorithm.fitness_table.size();i++) {
@@ -159,8 +171,8 @@ public class Algorithm {
 			Algorithm.fitness_table.remove(i);
 			Algorithm.fitness_table.add(i, Qi);
 		}
-		System.out.println("fitness ="+ Algorithm.fitness_table+"\n");
-		System.out.println("max fitness ="+ max_fitness+"\n");
+		//System.out.println("fitness ="+ Algorithm.fitness_table+"\n");
+		//System.out.println("max fitness ="+ max_fitness+"\n");
 		System.out.println("best gene="+ Algorithm.best_gene.getChromosome());
 	}
 
@@ -286,10 +298,12 @@ public class Algorithm {
 			arr_parent.add(parent3);
 			arr_parent.add(parent4);
 			if (random.nextDouble() <= Algorithm.crossover_rate) { 
-				
+				//if(parent1.getChromosome().size()<30) System.exit(0);
 				child = parent1.CrossoverMulti(arr_parent);
 				
 				child.Mutate(Algorithm.mutation_rate);
+				System.out.println("child ="+ child.getChromosome()+"\n");
+				
 				nextGeneration.add(child);
 			} /*else {
 				parent1.Mutate(mutation_rate);

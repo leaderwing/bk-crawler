@@ -76,24 +76,33 @@ public class Genome {
 	public Genome CrossoverMulti(ArrayList<Genome> parent) {
 		  Genome temp = new Genome();
 		  this.SetSize();
+		  System.out.println("size chromosome ="+ size_chromosome+"\n");
+		  
 		  int j = 0,index = 0, t=0;
 		  int step = size_chromosome/parent.size();
 		  t = step;
-		  for (int i = 0; i < parent.size()-1; i++) {		   
+		  for (int i = 0; i < parent.size()-1; i++) {
+			  System.out.println("cross i="+i+"\n");
+			  System.out.println("cross j="+j+"\n");
+			  System.out.println("cross t="+t+"\n");
 			index = getMaxIndex(parent, j, t);
 			ArrayList<Double> nst=parent.get(index).getChromosome();
 			for (int k=j; k<t; k++) {
 				temp.AddChromosome(nst.get(k));
+				System.out.println("temp ="+temp.getChromosome()+"\n");
 			}
 			j=t;
 			t=t+step;			
 		   }
-		  index = getMaxIndex(parent, t, size_chromosome-1);
+		  System.out.println("aaa cross j="+j+"\n");
+		  System.out.println("aaa cross t="+t+"\n");
+		  index = getMaxIndex(parent, j, size_chromosome-1);
 		  ArrayList<Double> nst=parent.get(index).getChromosome();
-			for (int k=t; k<=size_chromosome-1; k++) {
+			for (int k=j; k<size_chromosome; k++) {
 				temp.AddChromosome(nst.get(k));
+				System.out.println("temp ="+temp.getChromosome()+"\n");
 			}
-		  
+		  //System.out.println("stop");System.exit(0);
 		  return temp;
 		 }
 	// dot bien
@@ -201,11 +210,8 @@ public class Genome {
 		 System.out.println("size parent ="+ arr_parent.size()+"\n");
 		 for (int i=0; i<arr_parent.size(); i++) {
 			 double weight = 0;
-			 for(int j=last_pos; j<=pos; j++) {
-				 System.out.println("i="+i+"\n");
-				 System.out.println("j="+j+"\n");
-				 System.out.println("arr_parent i="+ arr_parent.get(i)+"\n");
-				 System.out.println("chromosome j="+ arr_parent.get(i).chromosome.get(j)+"\n");
+			 for(int j=last_pos; j<pos; j++) {
+				
 				 weight += arr_parent.get(i).getChromosome().get(j);  
 			 }
 			 if (max_weight < weight) {

@@ -160,7 +160,7 @@ public class Input_new_approach {
 			 }
 		 }
 		 
-		//lấy ra vài key có trọng số lớn nhất mà không trùng keyword khởi tạo
+		//sxep nổi bọt mảng trọng số theo chiều tăng dần
 		 int  counter, index;
 	       int length= weight_best_word.size();
 	       for(counter=0; counter<length-1; counter++) { //Loop once for each element in the array.
@@ -169,11 +169,15 @@ public class Input_new_approach {
 	                   double temp = weight_best_word.get(index); //These three lines just swap the two elements:
 	                   weight_best_word.set(index, weight_best_word.get(index+1)) ;
 	                   weight_best_word.set(index+1, temp);
+	                   String key = arr_best_word.get(index);
+	                   arr_best_word.set(index, arr_best_word.get(index+1));
+	                   arr_best_word.set(index+1, key);
 	               }
 	           }
 	       }
 
 		// System.out.println("weight best word ="+weight_best_word);
+	     //lấy ra vài key có trọng số lớn nhất mà không trùng keyword khởi tạo
 		 for(int n=0;n<3;n++) {
 			
 			 String key=arr_best_word.get(arr_best_word.size()-1);

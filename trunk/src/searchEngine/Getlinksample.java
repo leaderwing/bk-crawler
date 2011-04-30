@@ -37,24 +37,24 @@ import GA.Genome;
 public class Getlinksample {
 	
 
-	public static void main_2(String args[]) {
+	public static void main(String args[]) {
 		// link mà cso dạng http://hostname.com/abc.png là loại
 		String[] ext_file= {"png","exe","jpg","doc","docx"};
 		// array contain keyword
 		ArrayList<String> arr_keywords = new ArrayList<String>();
 		//arr_keywords.add("sport");
 		//arr_keywords.add("sports");
-		arr_keywords.add("win");
+		//arr_keywords.add("win");
 		arr_keywords.add("football");
-		arr_keywords.add("championship");
+		//arr_keywords.add("championship");
 		arr_keywords.add("cup");
 		arr_keywords.add("goal");
 		
 		arr_keywords.add("kick");
 		arr_keywords.add("soccer");
 		
-		arr_keywords.add("score");
-		arr_keywords.add("scores");
+		//arr_keywords.add("score");
+		//arr_keywords.add("scores");
 		ArrayList<String> keyword_2=new ArrayList<String>();
 		for(int i=0;i<arr_keywords.size();i++) {
 			keyword_2.add(arr_keywords.get(i));
@@ -77,7 +77,7 @@ public class Getlinksample {
 		
 	
 		// max document crawler
-		int max_doc = 3000;
+		int max_doc = 30000;
 		
 		// url of document
 		String url_doc = "";
@@ -103,14 +103,33 @@ public class Getlinksample {
 		String url_crawling = "";
 		String sourceLine = "";
 		String content = "";
+		// length of document
+		int length_doc=0;
+		// sum weight of the document
+		double weight_doc=0.0;
+		
+		
+		
+		// content document
+		
+		
+		
+		double avg_length_doc=0;
+		
+		
+		
 		for (int i = 0; i < max_doc; i++) {
+			helper helper = new helper();
+			Document code_html = new Document("");
+			
 			// length of document
-			int length_doc=0;
+			 length_doc=0;
 			// sum weight of the document
-			double weight_doc=0.0;
-			Document code_html = null;
+			 weight_doc=0.0;
+			 
+			 
 			// content document
-			String content_doc="";
+			 String content_doc="";
 			
 			if (arr_priority_link.size() > 0) {
 				try {
@@ -118,7 +137,7 @@ public class Getlinksample {
 
 					
 					code_html = Jsoup.connect(arr_priority_link.get(0)).get();
-					
+				
 					url_doc = arr_priority_link.get(0);
 					arr_link_crawled.add(arr_priority_link.get(0));
 					// System.out.println("arr link crawled");
@@ -157,22 +176,23 @@ public class Getlinksample {
 			
 			if (code_html == null) { continue; }
 			Document doc = Jsoup.parse(code_html.html());
+			 code_html=null;
+			
 			content_doc = doc.body().text();
 			N++;
-			helper helper = new helper();
+			
             
 			content_doc= content_doc.toLowerCase();
 
 			
 			content_doc = helper.removeStopWord(content_doc);
-			
-			
 			String[] arr_content = content_doc.split(" ");
+		
 			length_doc = arr_content.length;
 			sum_length_doc = sum_length_doc + length_doc;
-			float avg_length_doc = sum_length_doc / N;
+			 avg_length_doc = sum_length_doc / N;
 			
-			HashMap<String, Integer> count_frequent_term = new HashMap<String, Integer>();
+			 HashMap<String, Integer> count_frequent_term = new HashMap<String, Integer>();
 			for (int j = 0; j < arr_content.length; j++) {
 				if (count_frequent_term.get(arr_content[j]) == null) {
 					count_frequent_term.put(arr_content[j], 1);
@@ -230,13 +250,12 @@ public class Getlinksample {
                 
 				
 			}
-
-	
-			
-			
+		
+						
 			// save into db
 			DocumentSample.saveDocument(url_doc, content_doc, weight_doc);
-
+            DocumentSample.closeConnect();
+           
 			// cho link vao queue
 			int position = -1;//vị trí chèn link
 			//position chỉ cần tìm ở vòng lặp đầu,các vòng sau thì chèn tại position đó luôn
@@ -385,8 +404,24 @@ public class Getlinksample {
 				else {
 					link.remove();
 				}
+				link=null;
+				linkHref=null;
 			}
-            
+			 url_doc=null;
+	            content_doc=null;
+	            arr_content=null;
+	            Runtime rt = Runtime.getRuntime();
+
+			   
+			    
+			   
+
+			    System.out.println("Free Memory before call to gc():  " +                 
+			            rt.freeMemory());
+			    System.runFinalization();
+			    System.gc();
+			    System.out.println(" Free Memory after call to gc():  " +                 
+			            rt.freeMemory());       
 			
 
 		}

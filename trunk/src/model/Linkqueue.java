@@ -10,10 +10,11 @@ public class Linkqueue {
 	private static java.sql.Statement stmt = null;
 	private static int row_count;
 	private static java.sql.ResultSet rs;
+	 private static Connection connect;
 	public static void saveDocument(String link,double weight) {
-		Connection conn = ConnectDatabase.connectDb();
+		 connect = ConnectDatabase.connectDb();
 		try {
-			stmt = conn.createStatement();
+			stmt = connect.createStatement();
 			link=link.replace("'", "");
 			link=link.replace('"', '\"');
 			String sql="INSERT INTO link_queue(link,weight) VALUES('"+ link+"',"+weight+")";
@@ -23,26 +24,16 @@ public class Linkqueue {
 			// TODO Auto-generated catch block
 			System.out.println("loi save link queue");
 			e.printStackTrace();
-		} finally {
-
-			if (stmt != null) {
-				try {
-					stmt.close();
-				} catch (SQLException sqlEx) {
-				}
-
-				stmt = null;
-			}
-		}
+		} 
 
 	}
 	
 	public static java.sql.ResultSet getLink() {
 		
 		int id=0;
-		Connection conn = ConnectDatabase.connectDb();
+		 connect = ConnectDatabase.connectDb();
 		try {
-			stmt = conn.createStatement();
+			stmt = connect.createStatement();
 			String sql="SELECT * FROM link_queue ORDER BY weight desc LIMIT 1";
 			rs = stmt.executeQuery(sql);
 			
@@ -54,44 +45,43 @@ public class Linkqueue {
 		} 
 		return rs;
 	}
-	public static void closeStatement() {
+	public static void closeConnect() {
 		if (stmt != null) {
 			try {
 				stmt.close();
+				//connect.close();
 			} catch (SQLException sqlEx) {
 			}
 			stmt = null;
 		}
+		if (connect != null) {
+			try {
+				connect.close();
+				//connect.close();
+			} catch (SQLException sqlEx) {
+			}
+			connect = null;
+		}
 	}
 	public static void delLink(int id) {
-		Connection conn = ConnectDatabase.connectDb();
+		 connect = ConnectDatabase.connectDb();
 		try {
-			stmt = conn.createStatement();
+			stmt = connect.createStatement();
 			String sql="DELETE FROM link_queue WHERE id="+id;
 			stmt.executeUpdate(sql);
 		} catch (SQLException e) {
 			// TODO Auto-generated catch block
 			System.out.println("loi delete link");
 			e.printStackTrace();
-		} finally {
-
-			if (stmt != null) {
-				try {
-					stmt.close();
-				} catch (SQLException sqlEx) {
-				}
-
-				stmt = null;
-			}
-		}
+		} 
 
 	}
 	public static boolean checkLink(String link) {
 		boolean is_queue=false;
 		int id=0;
-		Connection conn = ConnectDatabase.connectDb();
+		 connect = ConnectDatabase.connectDb();
 		try {
-			stmt = conn.createStatement();
+			stmt = connect.createStatement();
 			link=link.replace("'", "");
 			link=link.replace('"', '\"');
 			String sql="SELECT id FROM link_queue WHERE link='"+link+"' LIMIT 1";
@@ -106,17 +96,7 @@ public class Linkqueue {
 			// TODO Auto-generated catch block
 			System.out.println("loi check link");
 			e.printStackTrace();
-		} finally {
-
-			if (stmt != null) {
-				try {
-					stmt.close();
-				} catch (SQLException sqlEx) {
-				}
-
-				stmt = null;
-			}
-		}
+		} 
 		return is_queue;
 	}
 	

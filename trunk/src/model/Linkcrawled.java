@@ -10,36 +10,27 @@ public class Linkcrawled {
 	private static java.sql.Statement stmt = null;
 	private static int row_count;
 	private static java.sql.ResultSet rs;
+	private static Connection connect;
 	public static void saveDocument(String link) {
-		Connection conn = ConnectDatabase.connectDb();
+		 connect = ConnectDatabase.connectDb();
 		try {
-			stmt = conn.createStatement();
+			stmt = connect.createStatement();
 			String sql="INSERT INTO link_crawled(link) VALUES('"+ link+"')";
 			row_count = stmt.executeUpdate(sql);
 		} catch (SQLException e) {
 			// TODO Auto-generated catch block
 			System.out.println("loi save db");
 			e.printStackTrace();
-		} finally {
-
-			if (stmt != null) {
-				try {
-					stmt.close();
-				} catch (SQLException sqlEx) {
-				}
-
-				stmt = null;
-			}
-		}
+		} 
 
 	}
 	
 	public static boolean checkLink(String link) {
 		boolean is_crawled=false;
 		int id=0;
-		Connection conn = ConnectDatabase.connectDb();
+		 connect = ConnectDatabase.connectDb();
 		try {
-			stmt = conn.createStatement();
+			stmt = connect.createStatement();
 			link=link.replace("'", "");
 			link=link.replace('"', '\"');
 			String sql="SELECT id FROM link_crawled WHERE link='"+link+"' LIMIT 1";
@@ -53,17 +44,25 @@ public class Linkcrawled {
 			// TODO Auto-generated catch block
 			System.out.println("loi check link");
 			e.printStackTrace();
-		} finally {
-
-			if (stmt != null) {
-				try {
-					stmt.close();
-				} catch (SQLException sqlEx) {
-				}
-
-				stmt = null;
-			}
-		}
+		} 
 		return is_crawled;
+	}
+	public static void closeConnect() {
+		if (stmt != null) {
+			try {
+				stmt.close();
+				//connect.close();
+			} catch (SQLException sqlEx) {
+			}
+			stmt = null;
+		}
+		if (connect != null) {
+			try {
+				connect.close();
+				//connect.close();
+			} catch (SQLException sqlEx) {
+			}
+			connect = null;
+		}
 	}
 }

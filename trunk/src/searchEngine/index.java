@@ -22,6 +22,9 @@ import org.jsoup.Connection;
 import org.jsoup.Jsoup;
 import org.jsoup.nodes.Document;
 import org.jsoup.nodes.Element;
+import org.jsoup.nodes.Node;
+
+//import test.GC1;
 
 //import vn.hus.nlp.tokenizer.VietTokenizer;
 
@@ -51,6 +54,9 @@ public class index {
 		
 		//arr_keywords.add("score");
 		//arr_keywords.add("scores");
+		//tinh trong so trung binh cua keyword trong linksmaple
+		double avg_weight= CalculateWeightByKey.calculateWeightByKey(arr_keywords);
+		System.out.println("avg weight ="+avg_weight);//System.exit(0);
 		ArrayList<String> keyword_2=new ArrayList<String>();
 		for(int i=0;i<arr_keywords.size();i++) {
 			keyword_2.add(arr_keywords.get(i));
@@ -62,8 +68,8 @@ public class index {
 		int num_nst = 30;
 		// seed url
 		
-		String url="http://www.nytimes.com/pages/sports/index.html";
-		//String url="http://sports.yahoo.com/";
+		String url="http://news.bbc.co.uk/sport2/hi/football/default.stm";
+		//String url="http://news.bbc.co.uk/sport";
 		// array contain the number of occurrences of term j in document i
 		int[] arr_frequency_term = new int[arr_keywords.size()];
 		// tong so document da crawler
@@ -75,7 +81,7 @@ public class index {
 		
 		
 		// max document crawler
-		int max_doc = 3000;
+		int max_doc = 30000;
 		
 		// url of document
 		String url_doc = "";
@@ -94,39 +100,67 @@ public class index {
 
 		// khoi tao
 		arr_priority_link.add(url);
+		arr_priority_link.add("http://www.nytimes.com/pages/sports/soccer/index.html");
+		arr_priority_link.add("http://www.foxsports.com.au/football");
 		
-		
-		
+		// array chua tong so document co chu keyword
+		ArrayList<Integer> nj = new ArrayList<Integer>();
+		for (int n = 0; n < arr_keywords.size(); n++) {
+			nj.add(n, 0);
+		}
 		String url_crawling = "";
 		String sourceLine = "";
 		String content = "";
+		// length of document
+		int length_doc;
+		// sum weight of the document
+		double weight_doc;
+		Document code_html;
+		Document doc=new Document("");
+		// content document
+		String content_doc="";
+		helper helper = new helper();
+		//mảng chứa các term trong doc
+		String[] arr_content;
+		double avg_length_doc=0;
+		//đếm số lần xuấ hiện của từng term trong document 
+		HashMap<String, Integer> count_frequent_term = new HashMap<String, Integer>();
+		URL address ;
+		// Open the address and create a BufferedReader with the source code.
+		InputStreamReader pageInput;
+		BufferedReader source;
+	
 		for (int i = 0; i < max_doc; i++) {
+			System.out.println("vòng lặp thứ "+ i+"\n");
+			count_frequent_term.clear();
 			// length of document
-			int length_doc=0;
+			 length_doc=0;
 			// sum weight of the document
-			double weight_doc=0;
-			Document code_html = null;
+			 weight_doc=0;
+			 code_html = null;
+			
+			 doc=null;
+			 
 			// content document
-			String content_doc="";
-			// array chua tong so document co chu keyword
-			int[] nj = new int[arr_keywords.size()];
-			for (int n = 0; n < nj.length; n++) {
-				nj[n] = 0;
-			}
+			content_doc="";
+			
 			if (arr_priority_link.size() > 0) {
 				try {
-					System.out.println("before 1 " + i + "aaa"+ arr_priority_link.get(0));
-//					sourceLine = "";
-//					content = "";
-//					URL address = new URL(arr_priority_link.get(0));
-//					// Open the address and create a BufferedReader with the source code.
-//					InputStreamReader pageInput = new InputStreamReader(address.openStream());
-//					BufferedReader source = new BufferedReader(pageInput);
-//					// Append each new HTML line into one string. Add a tab character.
-//					while ((sourceLine = source.readLine()) != null)
-//						content += sourceLine + "\t";
-					
-					code_html = Jsoup.connect(arr_priority_link.get(0)).get();
+					//System.out.println("before 1 " + i + "aaa"+ arr_priority_link.get(0));
+					sourceLine = "";
+					content = "";
+
+					 address = new URL(arr_priority_link.get(0));
+					// Open the address and create a BufferedReader with the source code.
+					 pageInput = new InputStreamReader(address.openStream());
+					 
+					 source = new BufferedReader(pageInput);
+					// Append each new HTML line into one string. Add a tab character.
+					while ((sourceLine = source.readLine()) != null)
+						content += sourceLine + "\t";
+					pageInput.close();
+					source.close();
+					//code_html = Jsoup.connect(arr_priority_link.get(0)).timeout(5000).get();
 					
 					url_doc = arr_priority_link.get(0);
 					arr_link_crawled.add(arr_priority_link.get(0));
@@ -144,19 +178,20 @@ public class index {
 			} else {
 				if (arr_link_in_queue.size() > 0) {
 					try {
-//						sourceLine = "";
-//						content = "";
-//						URL address = new URL(arr_link_in_queue.get(0));
-//						// Open the address and create a BufferedReader with the source code.
-//						InputStreamReader pageInput = new InputStreamReader(address.openStream());
-//						BufferedReader source = new BufferedReader(pageInput);
-//						// Append each new HTML line into one string. Add a tab character.
-//						while ((sourceLine = source.readLine()) != null)
-//							content += sourceLine + "\t";
+						sourceLine = "";
+						content = "";
+						 address = new URL(arr_link_in_queue.get(0));
+						// Open the address and create a BufferedReader with the source code.
+						 pageInput = new InputStreamReader(address.openStream());
+						 source = new BufferedReader(pageInput);
+						// Append each new HTML line into one string. Add a tab character.
+						while ((sourceLine = source.readLine()) != null)
+							content += sourceLine + "\t";
+						pageInput.close();
+						source.close();
+						//code_html =Jsoup.connect(arr_link_in_queue.get(0)).get();
 						
-						code_html =Jsoup.connect(arr_link_in_queue.get(0)).get();
-						
-						System.out.println("before 2 :" + i + " :"+ arr_link_in_queue.get(0));
+						//System.out.println("before 2 :" + i + " :"+ arr_link_in_queue.get(0));
 						url_doc = arr_link_in_queue.get(0);
 						arr_link_crawled.add(arr_link_in_queue.get(0));
 						arr_link_in_queue.remove(0);
@@ -170,15 +205,17 @@ public class index {
 					}
 				}
 			}
-//            content=content.toLowerCase();
-//			doc = Jsoup.parse(content);
-//			content_doc = doc.body().text();
+            content=content.toLowerCase();
+			doc = Jsoup.parse(content);
 			
-			if (code_html == null) { continue; }
-			Document doc = Jsoup.parse(code_html.html());
 			content_doc = doc.body().text();
+			
+			
+			/*if (code_html == null) { continue; }
+			 doc = Jsoup.parse(code_html.html());
+			content_doc = doc.body().text();*/
 			N++;
-			helper helper = new helper();
+			
             
 			content_doc= content_doc.toLowerCase();
             //System.out.println("content_ doc ="+ content_doc+"\n");
@@ -195,16 +232,16 @@ public class index {
 //				}
 //			}
 			//System.out.println("array list term ="+ arr_term_in_doc);
-			
+			//System.out.println("content before ="+ content_doc+"\n");
 			content_doc = helper.removeStopWord(content_doc);
-			
-			
-			String[] arr_content = content_doc.split(" ");
+			//System.out.println(content_doc);
+			///System.exit(0);
+			arr_content = content_doc.split(" ");
 			length_doc = arr_content.length;
 			sum_length_doc = sum_length_doc + length_doc;
-			float avg_length_doc = sum_length_doc / N;
+			 avg_length_doc = sum_length_doc / N;
 			
-			HashMap<String, Integer> count_frequent_term = new HashMap<String, Integer>();
+			
 			for (int j = 0; j < arr_content.length; j++) {
 				if (count_frequent_term.get(arr_content[j]) == null) {
 					count_frequent_term.put(arr_content[j], 1);
@@ -225,26 +262,25 @@ public class index {
 				}
 				int frequence_key = count_frequent_term
 						.get(arr_keywords.get(j));
-//                if(frequence_key>5) {
-//                	is_true_topic=true;
-//                }
+
                 
 						double ts = 0;
 						System.out.println("j= "+ j+"\n");
 						if (frequence_key > 0) {
-							nj[j] = nj[j] + 1;
+							int count = nj.get(j)+1;
+							nj.set(j, count);
 						}
 						if (frequence_key == 0) {
 							ts = 0;
-						} else if ((frequence_key > 0) && (nj[j] > 0)) {
+						} else if ((frequence_key > 0) && (nj.get(j) > 0)) {
 							ts = (Math.log(frequence_key) / Math.log(2) + 1)
-									* Math.log((double)N / nj[j]) / Math.log(2);
-						} else if ((frequence_key > 0) && (nj[j] == 0)) {
+									* Math.log((double)N / nj.get(j)) / Math.log(2);
+						} else if ((frequence_key > 0) && (nj.get(j) == 0)) {
 							ts = (Math.log(frequence_key) / Math.log(2) + 1)
 									* Math.log(N) / Math.log(2);
 						}
 						double ms = (0.8 + 0.2 * length_doc / avg_length_doc);
-		                ms=ms*Math.log(i)/Math.log(2);
+		               //ms=ms*Math.log(i+1)/Math.log(2);
 						if (ms != 0) {
 							weight_doc_j = ts / ms;
 							weight_doc = weight_doc + weight_doc_j;
@@ -258,18 +294,15 @@ public class index {
 //						System.out.println("avg length doc =" + avg_length_doc + "\n");
 //						System.out.println("tu so =" + ts + "\n");
 //						System.out.println("mau so =" + ms + "\n");
-						System.out.println("weight doc j =" + weight_doc_j + "\n");
+						//System.out.println("weight doc j =" + weight_doc_j + "\n");
                         
 						//
                 
 				
 			}
-//			if(is_true_topic==false) {
-//				weight_doc=0;
-//			}
-			
+		
 			// luu lai num_nst doc co weight lon nhat
-			if (weight_doc > 5) {
+			/*if (weight_doc > 0) {
 				if (doc_weight.size() == 0) {
 					doc_weight.add(weight_doc);
 					doc_link.add(url_doc);
@@ -302,7 +335,7 @@ public class index {
 				}
 			}
 			if (doc_weight.size() == num_nst) {
-				System.out.println("link best doc =" + doc_link + "\n");// System.exit(0);
+				//System.out.println("link best doc =" + doc_link + "\n");// System.exit(0);
 				InputGA_new_approach input_GA= new InputGA_new_approach();
 				ArrayList<Genome>initial_population = input_GA.find_bestword_and_create_genome(doc_content, doc_link,arr_keywords);
 				ArrayList<String> best_word = input_GA.getListBestWord();
@@ -311,43 +344,45 @@ public class index {
 						index.mutation_rate, index.crossover_rate,
 						index.number_generation);
 				alg.Go();
-				String new_key = alg.newKey();
-				if (!new_key.equals("")) {
-					int pos_new_key = alg.getPositionNewKey();
-					//arr_keywords.add(new_key);
-					/*keyword_2.add(new_key);
-					double weight_new_key = alg.getWeightNewKey();
+				ArrayList<String> new_key = alg.newKey();
+				ArrayList<String> linkofkey= alg.getLinkNewKey();
+				//ArrayList<Double> weight_of_key= alg.getWeightNewKey();
+				for (int m = 0; m < new_key.size(); m++) {
 					
-					Newkeyword.saveDocument(new_key, doc_link.get(pos_new_key),
-							weight_new_key);*/
-					boolean get = true;
-					// key mới không trùng với tập key đã có
-					for (int n = 0; n < keyword_2.size(); n++) {
-						String key_intial = keyword_2.get(n);
-						if (key_intial.equals(new_key)) {
-							get = false;
-							break;
-						} else {
-							continue;
+					if (!new_key.get(m).equals("")) {
+
+						boolean get = true;
+						// key mới không trùng với tập key đã có
+						for (int n = 0; n < keyword_2.size(); n++) {
+							String key_intial = keyword_2.get(n);
+							if (key_intial.equals(new_key.get(m))) {
+								get = false;
+								break;
+							} else {
+								continue;
+							}
 						}
-					}
-					if(get) {
-						//kiểm tra keyword mới có avg_weight > initial_key hay ko?
-						ArrayList<String> key= new ArrayList<String>();
-						key.add(new_key);
-						double weight= CalculateWeightByKey.calculateWeightByTerm(key);
-						keyword_2.add(new_key);
-						Newkeyword.saveDocument(new_key, doc_link.get(pos_new_key),weight);
+						if (get) {
+							// kiểm tra keyword mới có avg_weight > initial_key
+							// hay ko?
+							ArrayList<String> key = new ArrayList<String>();
+							key.add(new_key.get(m));
+							double weight = CalculateWeightByKey
+									.calculateWeightByKey(key);
+							keyword_2.add(new_key.get(m));
+							Newkeyword.saveDocument(new_key.get(m),
+									linkofkey.get(m), weight);
+						}
 					}
 				}
 				doc_content.clear();
 				doc_link.clear();
 				doc_weight.clear();
-			}
+			}*/
 			
 			// save into db
 			DocumentRelative.saveDocument(url_doc, content_doc, weight_doc);
-
+            DocumentRelative.closeConnect();
 			// cho link vao queue
 			int position = -1;//vị trí chèn link
 			//position chỉ cần tìm ở vòng lặp đầu,các vòng sau thì chèn tại position đó luôn
@@ -420,8 +455,8 @@ public class index {
 					for (int n = 0; n < arr_keywords.size(); n++) {
 						for (int m = 0; m < arr_link_text.length; m++) {
 							if (arr_link_text[m].equals(arr_keywords.get(n))) {
-								System.out.println("keyword ="+ arr_keywords.get(n) );
-								System.out.println("link text =" + linkText+"\n");
+								/*System.out.println("keyword ="+ arr_keywords.get(n) );
+								System.out.println("link text =" + linkText+"\n");*/
 								is_topic = true;
 								break;
 							}
@@ -498,7 +533,24 @@ public class index {
 					link.remove();
 				}
 			}
-            
+			content=null;
+			
+			content_doc=null;
+			arr_content=null;
+			url_doc=null;
+			Runtime rt = Runtime.getRuntime();
+
+			    System.out.println("Available Free Memory: " + rt.freeMemory());
+			    
+			   
+
+			    System.out.println("Free Memory before call to gc():  " +                 
+			            rt.freeMemory());
+			    System.runFinalization();
+			    System.gc();
+			    System.out.println(" Free Memory after call to gc():  " +                 
+			            rt.freeMemory());                
+			    
 			
 
 		}
