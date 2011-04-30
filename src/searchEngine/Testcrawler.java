@@ -35,7 +35,7 @@ public class Testcrawler {
 	private static double crossover_rate; // phan tram lai ghep
 	private static int number_generation; // phan tram lai ghep
 
-	public static void main(String args[]) {
+	public static void main_2(String args[]) {
 		
 		// link mà cso dạng http://hostname.com/abc.png là loại
 		String[] ext_file= {"png","exe","jpg","doc","docx"};
@@ -55,7 +55,7 @@ public class Testcrawler {
 		//arr_keywords.add("score");
 		//arr_keywords.add("scores");
 		//tinh trong so trung binh cua keyword trong linksmaple
-		double avg_weight= CalculateWeightByKey.calculateWeightByKey(arr_keywords);
+		double avg_weight= CalculateWeightByKey.calculateWeightByTerm(arr_keywords);
 		//System.out.println("avg weight ="+avg_weight);System.exit(0);
 		ArrayList<String> keyword_2=new ArrayList<String>();
 		for(int i=0;i<arr_keywords.size();i++) {
@@ -101,13 +101,18 @@ public class Testcrawler {
 
 		// khoi tao
 		arr_priority_link.add(url);
-		
+		// array chua tong so document co chu keyword
+		ArrayList<Integer> nj = new ArrayList<Integer>();
+		for (int n = 0; n < arr_keywords.size(); n++) {
+			nj.add(n, 0);
+		}
 		
 		
 		String url_crawling = "";
 		String sourceLine = "";
 		String content = "";
 		for (int i = 0; i < max_doc; i++) {
+			
 			// length of document
 			int length_doc=0;
 			// sum weight of the document
@@ -115,11 +120,7 @@ public class Testcrawler {
 			Document code_html = null;
 			// content document
 			String content_doc="";
-			// array chua tong so document co chu keyword
-			int[] nj = new int[arr_keywords.size()];
-			for (int n = 0; n < nj.length; n++) {
-				nj[n] = 0;
-			}
+			
 			if (arr_priority_link.size() > 0) {
 				try {
 					System.out.println("before 1 " + i + "aaa"+ arr_priority_link.get(0));
@@ -239,19 +240,20 @@ public class Testcrawler {
 						double ts = 0;
 						System.out.println("j= "+ j+"\n");
 						if (frequence_key > 0) {
-							nj[j] = nj[j] + 1;
+							int count = nj.get(j)+1;
+							nj.set(j, count);
 						}
 						if (frequence_key == 0) {
 							ts = 0;
-						} else if ((frequence_key > 0) && (nj[j] > 0)) {
+						} else if ((frequence_key > 0) && (nj.get(j) > 0)) {
 							ts = (Math.log(frequence_key) / Math.log(2) + 1)
-									* Math.log((double)N / nj[j]) / Math.log(2);
-						} else if ((frequence_key > 0) && (nj[j] == 0)) {
+									* Math.log((double)N / nj.get(j)) / Math.log(2);
+						} else if ((frequence_key > 0) && (nj.get(j) == 0)) {
 							ts = (Math.log(frequence_key) / Math.log(2) + 1)
 									* Math.log(N) / Math.log(2);
 						}
 						double ms = (0.8 + 0.2 * length_doc / avg_length_doc);
-		                ms=ms*Math.log(i)/Math.log(2);
+		                //ms=ms*Math.log(i+1)/Math.log(2);
 						if (ms != 0) {
 							weight_doc_j = ts / ms;
 							weight_doc = weight_doc + weight_doc_j;
@@ -276,7 +278,7 @@ public class Testcrawler {
 //			}
 			
 			// luu lai num_nst doc co weight lon nhat
-			if (weight_doc > 5) {
+			if (weight_doc > avg_weight) {
 				if (doc_weight.size() == 0) {
 					doc_weight.add(weight_doc);
 					doc_link.add(url_doc);

@@ -23,7 +23,7 @@ public class Getstopword {
 				 content.add(rs.getString("content"));
 				 
 			}
-			DocumentRelative.closeStatement();
+			DocumentRelative.closeConnect();
 		} catch (SQLException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();

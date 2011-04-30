@@ -50,6 +50,7 @@ public class Teststopword{
 				// TODO Auto-generated catch block
 				e.printStackTrace();
 			}
+			Linkqueue.closeConnect();
 			System.out.println("link crawler ="+link_crawl+"\n");
 			Linkcrawled.saveDocument(link_crawl);
 			if(link_crawl=="") {

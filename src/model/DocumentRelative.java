@@ -11,41 +11,31 @@ public class DocumentRelative extends ConnectDatabase {
 	private static java.sql.Statement stmt = null;
 	private static int count_row;
 	private static ResultSet rs;
-
+	private static Connection connect;
 	public static void saveDocument(String link, String content, double weight) {
 
-		Connection conn = ConnectDatabase.connectDb();
+		 connect = ConnectDatabase.connectDb();
         content= content.replace("'", " ");
         content= content.replace("\"", " ");
 		try {
-			stmt = conn.createStatement();
+			stmt = connect.createStatement();
 			String sql="INSERT INTO document_relative (link,content,weight) VALUES('"+ link + "','" + content + "'," + weight + ")";
 			//System.out.println("sql="+sql);//System.exit(0);
 			count_row = stmt.executeUpdate(sql);
-
+			
 		} catch (SQLException e) {
 			// TODO Auto-generated catch block
 			System.out.println("loi save document relative");
 			e.printStackTrace();
-		} finally {
-
-			if (stmt != null) {
-				try {
-					stmt.close();
-				} catch (SQLException sqlEx) {
-				}
-
-				stmt = null;
-			}
-		}
+		} 
 
 	}
 	public static ResultSet getContent() {
 		
 		
-		Connection conn = ConnectDatabase.connectDb();
+		 connect = ConnectDatabase.connectDb();
 		try {
-			stmt = conn.createStatement();
+			stmt = connect.createStatement();
 			String sql="SELECT * FROM document_relative ORDER BY id asc LIMIT 3000";
 			rs = stmt.executeQuery(sql);
 			
@@ -56,13 +46,22 @@ public class DocumentRelative extends ConnectDatabase {
 		} 
 		return rs;
 	}
-	public static void closeStatement() {
+	public static void closeConnect() {
 		if (stmt != null) {
 			try {
 				stmt.close();
+				//connect.close();
 			} catch (SQLException sqlEx) {
 			}
 			stmt = null;
+		}
+		if (connect != null) {
+			try {
+				connect.close();
+				//connect.close();
+			} catch (SQLException sqlEx) {
+			}
+			connect = null;
 		}
 	}
 
