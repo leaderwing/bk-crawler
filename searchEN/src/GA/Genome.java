@@ -160,21 +160,22 @@ public class Genome {
 	// Two parents, random crossover points
 	public Genome CrossoverTwoPrs_Random(ArrayList<Genome> parents, double ratio){
 		Genome temp = new Genome();
+		parents.get(0).SetSize();
 		int len = (int) (size_chromosome * ratio);
-		for (int i=0; i <= len; i++){
-			int pos;
+		for (int i=0; i < len; i++){
+			int pos = 0;
 			do{
 				pos = random.nextInt(size_chromosome);
 			}
-			while (temp.chromosome.get(pos) != null);
+			while (temp.chromosome.get(pos) != null); //TODO: bug
 			temp.chromosome.add(pos, parents.get(0).chromosome.get(pos));					
 		}
-		for (int i= len +1; i < size_chromosome; i++){			
-			int pos;
+		for (int i= len; i < size_chromosome; i++){			
+			int pos = 0;
 			do{
 				pos = random.nextInt(size_chromosome);
 			}
-			while (temp.chromosome.get(pos) != null);
+			while (temp.chromosome.get(pos) != null); //TODO: bug
 			temp.chromosome.add(pos, parents.get(1).chromosome.get(pos));			
 		}
 		return temp;
