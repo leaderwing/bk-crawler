@@ -135,7 +135,7 @@ CREATE TABLE IF NOT EXISTS `link_queue` (
 --
 
 INSERT INTO `link_queue` (`id`, `link`, `weight`) VALUES
-(1, 'http://dantri.com.vn/', 0);
+(1, 'http://vnexpress.net/', 0);
 
 -- --------------------------------------------------------
 
