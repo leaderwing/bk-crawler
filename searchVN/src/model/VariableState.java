@@ -22,6 +22,7 @@ public class VariableState extends ConnectDatabase {
 			String sql="INSERT INTO variable_state (keyword,num_doc_contain_key,num_doc_crawled,sum_length) VALUES('"+ keyword + "'," + num_doc_contain_key + "," + num_doc_crawled + ","+sum_length+")";
 			
 			count_row = stmt.executeUpdate(sql);
+			ConnectDatabase.closeDb();
 			
 		} catch (SQLException e) {
 			// TODO Auto-generated catch block
