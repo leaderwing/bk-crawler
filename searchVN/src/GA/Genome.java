@@ -143,7 +143,7 @@ public class Genome {
 		Genome temp = new Genome();
 		temp.chromosome = new ArrayList<Double>(index.num_nst);
 		for (int i = 0; i < index.num_nst; i++) {
-			temp.chromosome.set(i, -1.0);
+			temp.chromosome.add(i, -1.0);
 		}
 		parents.get(0).SetSize();
 		int len = (int) (size_chromosome * ratio);
