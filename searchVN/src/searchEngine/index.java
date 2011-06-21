@@ -201,8 +201,7 @@ public class index {
 					doc_link.remove(doc_weight.size() - 1);
 					doc_content.remove(doc_weight.size() - 1);
 				}
-			}
-
+			}			
 			if ((doc_weight.size() == num_nst)) {
 
 				InputGA_new_approach input_GA = new InputGA_new_approach();
