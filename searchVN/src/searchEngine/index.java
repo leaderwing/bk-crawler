@@ -49,6 +49,8 @@ public class index {
 	private static double mutation_rate; // phan tram dot bien
 	private static double crossover_rate; // phan tram lai ghep
 	private static int generation_number; // phan tram lai ghep
+	// so nst trong quan the
+	public static int num_nst =50;
 	
 	public static void main(String[]arg) {
 	//public static void Test() {	
@@ -63,8 +65,7 @@ public class index {
 		index.mutation_rate = 0.01;
 		index.crossover_rate = 0.8;
 		index.generation_number = 200;
-		// so nst trong quan the
-		int num_nst =50;
+		
 		// khoi tao cac mang chua thong tin ve 50 document tot nhat
 		ArrayList<String> doc_link = new ArrayList<String>();
 		ArrayList<String> doc_content = new ArrayList<String>();
@@ -336,7 +337,7 @@ public class index {
 				
 				 boolean is_crawled= Linkcrawled.checkLink(linkHref);
 				 Linkcrawled.closeConnect();
-				 
+				 System.out.println("is crawled="+is_crawled+"\n");
   				// neu link nay chua duoc crawl
   				if(!is_crawled) {
   					boolean is_success;
@@ -389,13 +390,14 @@ public class index {
 	    html = "";
 		try {
 			
-			/*URL address = new URL(link_crawl);
+			URL address = new URL(link_crawl);
 			// Open the address and create a BufferedReader with the source code.
 			InputStreamReader pageInput = new InputStreamReader(address.openStream());
 			BufferedReader source = new BufferedReader(pageInput);
 			// Append each new HTML line into one string. Add a tab character.
 			while ((sourceLine = source.readLine()) != null)
-				html += sourceLine + "\t";*/
+				html += sourceLine + "\t";
+			//code_html = Jsoup.connect(link_crawl).get();
 			 code_html = Jsoup.connect(link_crawl).get();
 		} catch (Exception le) {
 			le.printStackTrace();
@@ -477,10 +479,9 @@ public class index {
 				weight_doc = weight_doc + weight_doc_j;
 			} 
 			
-		}		
-		VariableState.delete();
+		}				
 		for(int i=0;i<arr_keywords.size();i++){
-			VariableState.saveDocument(arr_keywords.get(i), nj.get(i), num_doc_crawled, sum_length_doc);
+			VariableState.update(arr_keywords.get(i), nj.get(i), num_doc_crawled, sum_length_doc);
 		}
 		VariableState.closeConnect();
 		return is_success;

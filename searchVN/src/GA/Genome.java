@@ -8,6 +8,8 @@ import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.Random;
 
+import searchEngine.index;
+
 /**
  * 
  * @author Long
@@ -139,9 +141,9 @@ public class Genome {
 	// Two parents, random crossover points
 	public Genome CrossoverTwoPrs_Random(ArrayList<Genome> parents, double ratio) {
 		Genome temp = new Genome();
-		temp.chromosome = new ArrayList<Double>(30);
-		for (int i = 0; i < 30; i++) {
-			temp.chromosome.add(i, -1.0);
+		temp.chromosome = new ArrayList<Double>(index.num_nst);
+		for (int i = 0; i < index.num_nst; i++) {
+			temp.chromosome.set(i, -1.0);
 		}
 		parents.get(0).SetSize();
 		int len = (int) (size_chromosome * ratio);
