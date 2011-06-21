@@ -202,7 +202,7 @@ public class index {
 					doc_content.remove(doc_weight.size() - 1);
 				}
 			}			
-			if ((doc_weight.size() == 5)) {
+			if ((doc_weight.size() == num_nst)) {
 
 				InputGA_new_approach input_GA = new InputGA_new_approach();
 				ArrayList<Genome> initial_population = input_GA

@@ -12,8 +12,8 @@ public class helper {
 	public static String removeStopWord(String content) {
 		
 		String edit_content = "";
-		content = content.toLowerCase();
-		edit_content = content.replaceAll("[^a-z 0-9]+", "");
+		edit_content = content.toLowerCase();
+		edit_content = content.replaceAll("[0-9]", "");
 		edit_content = edit_content.replace("'", "\'");
 		edit_content = edit_content.replace('"', '\"');
 		String[] arr_content = edit_content.split(" ");
