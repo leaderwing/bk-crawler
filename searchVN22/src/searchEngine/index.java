@@ -213,7 +213,7 @@ public class index {
 				Algorithm alg = new Algorithm(doc_link, initial_population,
 						keyword_2, best_word, num_nst, index.mutation_rate,
 						index.crossover_rate, index.generation_number);
-				alg.Go(2);
+				alg.Go(4);
 				ArrayList<String> new_key = alg.newKey();
 				ArrayList<String> linkofkey = alg.getLinkNewKey();
 				ArrayList<Double> weight_of_key = alg.getWeightNewKey();
