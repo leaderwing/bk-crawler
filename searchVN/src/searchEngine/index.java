@@ -202,7 +202,7 @@ public class index {
 					doc_content.remove(doc_weight.size() - 1);
 				}
 			}			
-			if ((doc_weight.size() == num_nst)) {
+			if ((doc_weight.size() == 5)) {
 
 				InputGA_new_approach input_GA = new InputGA_new_approach();
 				ArrayList<Genome> initial_population = input_GA
@@ -430,6 +430,8 @@ public class index {
 		// má»—i pháº§n tá»­ máº£ng cÃ³ dáº¡ng chuá»—i nhÆ° sau : bÃ³ng_Ä‘Ã¡ lÃ 
 		// má»™t mÃ´n thá»ƒ_thao..........
 		String[] sentences = vietTokenizer.tokenize(content_doc);
+		//helper helper = new helper();
+		sentences = helper.removeStopWordVN(sentences);
 		// máº£ng word trong document.VD : thá»ƒ_thao,hÃ¡t,bÃ³ng_Ä‘Ã¡....
 		ArrayList<String> arr_term_in_doc = new ArrayList<String>();
 		for (int n = 0; n < sentences.length; n++) {
@@ -441,7 +443,6 @@ public class index {
 				}
 			}
 		}
-
 		length_doc = arr_term_in_doc.size();
 		sum_length_doc = sum_length_doc + length_doc;
 		float avg_length_doc = sum_length_doc / num_doc_crawled;
