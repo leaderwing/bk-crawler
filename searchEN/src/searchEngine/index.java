@@ -501,8 +501,7 @@ public class index {
 		for(int i=0;i<arr_keywords.size();i++){
 			VariableState.saveDocument(arr_keywords.get(i), nj.get(i), num_doc_crawled, sum_length_doc);
 		}
-		VariableState.closeConnect();
-		
+		VariableState.closeConnect();		
 		return is_success;
 	}
 	
