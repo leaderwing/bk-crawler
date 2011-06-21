@@ -213,7 +213,7 @@ public class index {
 				Algorithm alg = new Algorithm(doc_link, initial_population,
 						keyword_2, best_word, num_nst, index.mutation_rate,
 						index.crossover_rate, index.generation_number);
-				alg.Go(4);
+				alg.Go(2);
 				ArrayList<String> new_key = alg.newKey();
 				ArrayList<String> linkofkey = alg.getLinkNewKey();
 				ArrayList<Double> weight_of_key = alg.getWeightNewKey();
@@ -430,6 +430,8 @@ public class index {
 		// má»—i pháº§n tá»­ máº£ng cÃ³ dáº¡ng chuá»—i nhÆ° sau : bÃ³ng_Ä‘Ã¡ lÃ 
 		// má»™t mÃ´n thá»ƒ_thao..........
 		String[] sentences = vietTokenizer.tokenize(content_doc);
+		//helper helper = new helper();
+		sentences = helper.removeStopWordVN(sentences);
 		// máº£ng word trong document.VD : thá»ƒ_thao,hÃ¡t,bÃ³ng_Ä‘Ã¡....
 		ArrayList<String> arr_term_in_doc = new ArrayList<String>();
 		for (int n = 0; n < sentences.length; n++) {
@@ -441,7 +443,6 @@ public class index {
 				}
 			}
 		}
-
 		length_doc = arr_term_in_doc.size();
 		sum_length_doc = sum_length_doc + length_doc;
 		float avg_length_doc = sum_length_doc / num_doc_crawled;

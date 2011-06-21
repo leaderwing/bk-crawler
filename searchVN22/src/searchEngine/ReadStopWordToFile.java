@@ -2,21 +2,25 @@ package searchEngine;
 
 import java.io.BufferedReader;
 import java.io.File;
+import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.FileReader;
 import java.io.IOException;
+import java.io.InputStreamReader;
+import java.io.Reader;
 import java.util.ArrayList;
 
 public class ReadStopWordToFile {
 	public static ArrayList<String>  readStopWordToFile()
     {
-        File file = new File("C:\\Users\\LONG\\workspace\\searchVN22\\stopword_vietnamese.txt");
+        //File file = new File("C:\\Users\\LONG\\workspace\\searchVN\\stopword_vietnamese.txt");
         StringBuffer contents = new StringBuffer();
         BufferedReader reader = null;
         ArrayList<String> list_stopword= new ArrayList<String>();
         try
         {
-            reader = new BufferedReader(new FileReader(file));
+        	Reader in = new InputStreamReader(new FileInputStream("stopword_vietnamese.txt"), "Unicode");
+            reader = new BufferedReader(in);
             String text = null;
 
             // repeat until all lines is read
