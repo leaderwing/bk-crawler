@@ -149,6 +149,8 @@ public class index {
 			// lÃ  má»™t mÃ´n thá»ƒ_thao..........
 			String[] sentences = vietTokenizer.tokenize(content_doc);
 			// máº£ng word trong document.VD : thá»ƒ_thao,hÃ¡t,bÃ³ng_Ä‘Ã¡....
+			sentences = helper.removeStopWordVN(sentences);
+
 			ArrayList<String> arr_term_in_doc = new ArrayList<String>();
 			for (int n = 0; n < sentences.length; n++) {
 				if (!sentences[n].equals("\n\n")) {
