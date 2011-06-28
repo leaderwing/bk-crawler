@@ -272,8 +272,8 @@ public class Algorithm {
 			}*/
 			Integer count_parent=0;
 			while(count_parent<num_parent){
-				//Integer temp =this.rouletteSelection();
-				Integer temp = this.randomSelection();
+				Integer temp =this.rouletteSelection();
+				//Integer temp = this.randomSelection();
 				if(count_parent==0){
 					pidx.add(temp);
 					count_parent++;
@@ -330,6 +330,10 @@ public class Algorithm {
 			Algorithm.thisGeneration.set(i, Algorithm.nextGeneration.get(i));
 		}*/
 	}
+	public int bestSelection(){
+		int pid 
+	}
+	
 	public int rouletteSelection() {
 		// TODO Auto-generated method stub
 		Double random = Math.random();
