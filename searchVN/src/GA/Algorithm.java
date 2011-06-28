@@ -229,8 +229,8 @@ public class Algorithm {
 			while ((count_generation < Algorithm.number_generation)
 					&& (Algorithm.best_fitness < Algorithm.suitable_fitness)) {
 				count_generation++;
-				this.CreateNextGeneration2(num_parent);
-				this.caculateRouletteWheel(Algorithm.thisGeneration);
+				this.CreateNextGeneration3(num_parent);
+				//this.caculateRouletteWheel(Algorithm.thisGeneration);
 				if (Algorithm.is_GA) {
 					System.out.println("is GA 2 :" + Algorithm.is_GA);
 
@@ -327,7 +327,7 @@ public class Algorithm {
 			Genome child;
 			Genome parent = Algorithm.thisGeneration.get(pidx.get(0));
 			if (random.nextDouble() <= Algorithm.crossover_rate) {
-				child = parent.CrossoverTwoPrs_Random(arr_parent, 0.5);
+				child = parent.CrossoverMultiRandom(arr_parent);
 				System.out.println("child =" + child.getChromosome() + "\n");
 				child.Mutate(Algorithm.mutation_rate);
 
