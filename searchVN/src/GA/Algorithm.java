@@ -47,8 +47,7 @@ public class Algorithm {
 										// thÃ¬ khÃ´ng GA,is_GA=false
 	public static Random random = new Random();
 	public static double suitable_fitness = 0.9;
-	ArrayList<Integer> bestTable = null;
-	int posBest = 0;
+	private ArrayList<Integer> bestTable = new ArrayList<Integer>();	
 
 	Algorithm() {
 
@@ -222,6 +221,7 @@ public class Algorithm {
 		// Genome.setMutationRate(Algorithm.mutation_rate);
 		Algorithm.best_gene = new Genome();
 		this.caculateRouletteWheel(Algorithm.thisGeneration);
+		initialBestTable();
 		System.out.println("is GA 1 :" + Algorithm.is_GA);
 		if (Algorithm.is_GA) {
 
@@ -229,8 +229,8 @@ public class Algorithm {
 			while ((count_generation < Algorithm.number_generation)
 					&& (Algorithm.best_fitness < Algorithm.suitable_fitness)) {
 				count_generation++;
-				this.CreateNextGeneration3(num_parent);
-				//this.caculateRouletteWheel(Algorithm.thisGeneration);
+				this.CreateNextGeneration2(num_parent);
+				this.caculateRouletteWheel(Algorithm.thisGeneration);
 				if (Algorithm.is_GA) {
 					System.out.println("is GA 2 :" + Algorithm.is_GA);
 
@@ -302,50 +302,7 @@ public class Algorithm {
 		 */
 	}
 
-	// lai ghep da diem
-	public void CreateNextGeneration3(Integer num_parent) {
-		ArrayList<Genome> nextGeneration = new ArrayList<Genome>();
-		initialBestTable();
-		while (nextGeneration.size() < Algorithm.population_size) {
-			ArrayList<Integer> pidx = new ArrayList<Integer>();
-			Integer count_parent = 0;
-			while (count_parent < num_parent) {
-				pidx.add(bestGeneSelection(posBest));
-				posBest++;
-				count_parent++;
-			}
-			System.out.println("pidx =" + pidx + "\n");
-			ArrayList<Genome> arr_parent = new ArrayList<Genome>();
-			for (int i = 0; i < num_parent; i++) {
-				arr_parent.add(Algorithm.thisGeneration.get(pidx.get(i)));
-				System.out.println("parent "
-						+ i
-						+ "="
-						+ Algorithm.thisGeneration.get(pidx.get(i))
-								.getChromosome() + "\n");
-			}
-			Genome child;
-			Genome parent = Algorithm.thisGeneration.get(pidx.get(0));
-			if (random.nextDouble() <= Algorithm.crossover_rate) {
-				child = parent.CrossoverMultiRandom(arr_parent);
-				System.out.println("child =" + child.getChromosome() + "\n");
-				child.Mutate(Algorithm.mutation_rate);
-
-				nextGeneration.add(child);
-			}
-		}
-		Algorithm.thisGeneration = nextGeneration;
-
-		System.out.println("this generation ="
-				+ Algorithm.thisGeneration.size());
-		for (int i = 0; i < Algorithm.thisGeneration.size(); i++) {
-			System.out.println(Algorithm.thisGeneration.get(i).getChromosome()
-					+ "\n");
-		}
-		bestTable = null;
-		posBest = 0;
-	}
-
+	// lai ghep da diem	
 	public void CreateNextGeneration2(Integer num_parent) {
 		ArrayList<Genome> nextGeneration = new ArrayList<Genome>(); // quan the
 																	// moi
@@ -357,7 +314,8 @@ public class Algorithm {
 			 */
 			Integer count_parent = 0;
 			while (count_parent < num_parent) {
-				Integer temp = this.rouletteSelection();
+				//Integer temp = this.rouletteSelection();
+				Integer temp = this.bestGeneSelection();
 				if (count_parent == 0) {
 					pidx.add(temp);
 					count_parent++;
@@ -391,9 +349,9 @@ public class Algorithm {
 			Genome child;
 			Genome parent = Algorithm.thisGeneration.get(pidx.get(0));
 			if (random.nextDouble() <= Algorithm.crossover_rate) {
-				// if(parent1.getChromosome().size()<30) System.exit(0);
-				// child = parent.CrossoverMultiRandom(arr_parent);
-				child = parent.CrossoverTwoPrs_Random(arr_parent, 0.5);
+				//if(parent1.getChromosome().size()<30) System.exit(0);
+				child = parent.CrossoverMultiRandom(arr_parent);
+				//child = parent.CrossoverTwoPrs_Random(arr_parent, 0.5);
 				System.out.println("child =" + child.getChromosome() + "\n");
 				child.Mutate(Algorithm.mutation_rate);
 
@@ -432,22 +390,35 @@ public class Algorithm {
 		return gene_i;
 	}
 
-	public void initialBestTable() {
-		int max = 0;
-		for (int j = 0; j < thisGeneration.size() - 1; j++) {
+	public void initialBestTable() {	
+		bestTable.clear();
+		for (int i = 0; i < 50; i++ ){
+			bestTable.add(i);		
+		}	
+		for (int j = 0; j < thisGeneration.size(); j++) {
 			for (int i = j; i < thisGeneration.size(); i++) {
 				if (thisGeneration.get(i).GetFitness() > thisGeneration
-						.get(max).GetFitness()) {
-					max = i;
+						.get(j).GetFitness()) {					
+					bestTable.set(i,j);
+					bestTable.set(j,i);
 				}
-			}
-			bestTable.add(j, max);
+			}		
 
 		}
 	}
 
-	public int bestGeneSelection(int pos) {
-		return bestTable.get(pos);
+	public int bestGeneSelection() {
+		int random = Algorithm.random.nextInt(bestTable.size());
+		int gene_i = 0;
+		for (int i = 0; i < bestTable.size(); i++) {
+			if (random <= i) {
+				gene_i = bestTable.get(i);
+				break;
+			} else {
+				continue;
+			}
+		}
+		return gene_i;
 	}
 	// Long code
 

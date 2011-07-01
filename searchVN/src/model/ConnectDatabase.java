@@ -8,10 +8,10 @@ public class ConnectDatabase {
 	private static Connection conn = null;
 
 	private static String url = "jdbc:mysql://localhost/";
-	private static String dbName = "search23";
+	private static String dbName = "search43";
 	private static String driver = "com.mysql.jdbc.Driver";
 	private static String userName = "root";
-	private static String password = "vertrigo";
+	private static String password = "";
 
 	protected static Connection connectDb() {
 
