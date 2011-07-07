@@ -47,7 +47,7 @@ public class Algorithm {
 										// thÃ¬ khÃ´ng GA,is_GA=false
 	public static Random random = new Random();
 	public static double suitable_fitness = 0.9;
-	private ArrayList<Integer> bestTable = new ArrayList<Integer>();	
+	private ArrayList<Integer> bestTable = new ArrayList<Integer>();
 
 	Algorithm() {
 
@@ -229,7 +229,8 @@ public class Algorithm {
 			while ((count_generation < Algorithm.number_generation)
 					&& (Algorithm.best_fitness < Algorithm.suitable_fitness)) {
 				count_generation++;
-				this.CreateNextGeneration2(num_parent);
+				//this.CreateNextGeneration2(num_parent);
+				this.CreateNextGeneration3(num_parent);
 				this.caculateRouletteWheel(Algorithm.thisGeneration);
 				if (Algorithm.is_GA) {
 					System.out.println("is GA 2 :" + Algorithm.is_GA);
@@ -302,7 +303,33 @@ public class Algorithm {
 		 */
 	}
 
-	// lai ghep da diem	
+	// lai ghep da diem
+	public void CreateNextGeneration3(Integer num_parent) {
+		ArrayList<Genome> nextGeneration = new ArrayList<Genome>();
+		while (nextGeneration.size() < Algorithm.population_size) {
+			ArrayList<Genome> arr_parent = lvnDistance(num_parent);
+			Genome child;
+			Genome parent = arr_parent.get(0);
+			if (random.nextDouble() <= Algorithm.crossover_rate) {				
+				// if(parent1.getChromosome().size()<30) System.exit(0);
+				//child = parent.CrossoverMultiRandom(arr_parent);
+				child = parent.CrossoverTwoPrs_Random(arr_parent, 0.5);
+				System.out.println("child =" + child.getChromosome() + "\n");
+				child.Mutate(Algorithm.mutation_rate);
+
+				nextGeneration.add(child);
+			}
+		}
+
+		Algorithm.thisGeneration = nextGeneration;
+
+		System.out.println("this generation ="
+				+ Algorithm.thisGeneration.size());
+		for (int i = 0; i < Algorithm.thisGeneration.size(); i++) {
+			System.out.println(Algorithm.thisGeneration.get(i).getChromosome()
+					+ "\n");
+		}
+	}
 	public void CreateNextGeneration2(Integer num_parent) {
 		ArrayList<Genome> nextGeneration = new ArrayList<Genome>(); // quan the
 																	// moi
@@ -314,7 +341,7 @@ public class Algorithm {
 			 */
 			Integer count_parent = 0;
 			while (count_parent < num_parent) {
-				//Integer temp = this.rouletteSelection();
+				// Integer temp = this.rouletteSelection();
 				Integer temp = this.bestGeneSelection();
 				if (count_parent == 0) {
 					pidx.add(temp);
@@ -349,9 +376,9 @@ public class Algorithm {
 			Genome child;
 			Genome parent = Algorithm.thisGeneration.get(pidx.get(0));
 			if (random.nextDouble() <= Algorithm.crossover_rate) {
-				//if(parent1.getChromosome().size()<30) System.exit(0);
+				// if(parent1.getChromosome().size()<30) System.exit(0);
 				child = parent.CrossoverMultiRandom(arr_parent);
-				//child = parent.CrossoverTwoPrs_Random(arr_parent, 0.5);
+				// child = parent.CrossoverTwoPrs_Random(arr_parent, 0.5);
 				System.out.println("child =" + child.getChromosome() + "\n");
 				child.Mutate(Algorithm.mutation_rate);
 
@@ -390,19 +417,19 @@ public class Algorithm {
 		return gene_i;
 	}
 
-	public void initialBestTable() {	
+	public void initialBestTable() {
 		bestTable.clear();
-		for (int i = 0; i < 50; i++ ){
-			bestTable.add(i);		
-		}	
+		for (int i = 0; i < 50; i++) {
+			bestTable.add(i);
+		}
 		for (int j = 0; j < thisGeneration.size(); j++) {
 			for (int i = j; i < thisGeneration.size(); i++) {
-				if (thisGeneration.get(i).GetFitness() > thisGeneration
-						.get(j).GetFitness()) {					
-					bestTable.set(i,j);
-					bestTable.set(j,i);
+				if (thisGeneration.get(i).GetFitness() > thisGeneration.get(j)
+						.GetFitness()) {
+					bestTable.set(i, j);
+					bestTable.set(j, i);
 				}
-			}		
+			}
 
 		}
 	}
@@ -419,6 +446,60 @@ public class Algorithm {
 			}
 		}
 		return gene_i;
+	}
+
+	public int lvnCalc(Genome p1, Genome p2) {
+		int nst = 50;
+		int p = 0;
+		for (int i = 0; i < nst; i++) {
+			if (p1.getChromosome().get(i) != p2.getChromosome().get(i)) {
+				p++;
+			} else {
+				continue;
+			}
+		}
+
+		return p;
+	}
+
+	public ArrayList<Integer> lvnTable(int p) {
+		ArrayList<Integer> temp = new ArrayList<Integer>();
+		for (int i = 0; i < thisGeneration.size(); i++) {
+			temp.add(i);
+		}
+		for (int i = 0; i < thisGeneration.size(); i++) {
+			for (int t = i; t < thisGeneration.size(); t++) {				
+				int j1 = 0, j2 =0;
+				if (i == p) {
+					continue;
+				}
+				j1 = lvnCalc(thisGeneration.get(p), thisGeneration.get(i));
+				j2 = lvnCalc(thisGeneration.get(p), thisGeneration.get(t));
+				if (j1 < j2) {
+					temp.set(i,t);
+					temp.set(t, i);
+				}
+			}
+		}
+		return temp;
+	}
+
+	public ArrayList<Genome> lvnDistance(int num_parent) {
+		ArrayList<Genome> temp = new ArrayList<Genome>();
+		ArrayList<Integer> table = new ArrayList<Integer>();
+		int first = random.nextInt(thisGeneration.size());
+		temp.add(thisGeneration.get(first));
+		table = lvnTable(first);
+		int i = 0; 
+		while(i < num_parent){
+			if(table.get(i) == first){
+				i++;
+				continue;
+			}
+			temp.add(thisGeneration.get(i));
+			i++;
+		}
+		return temp;
 	}
 	// Long code
 
